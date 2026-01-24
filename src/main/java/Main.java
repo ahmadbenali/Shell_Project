@@ -2,18 +2,37 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        // TODO: Uncomment the code below to pass the first stage
+
 
         boolean flag = true;
         while(flag)
         {
             System.out.print("$ ");
             Scanner scanner=new Scanner(System.in);
-            String command=scanner.nextLine();
+            String input=scanner.nextLine();
 
+
+            String []parts=input.split(" ",2);
+            String command=parts[0];
+            String out=parts[1];
             // This "exit".equals(command) for NULL safe
-            if("exit".equals(command)) {flag=false;}
-            else System.out.println(command+": command not found");
+            switch (command)
+            {
+                case "exit" ->System.exit(0);
+                case "echo" ->System.out.println(out);
+                default -> System.out.println(command+": command not found");
+            }
+//            if("exit".equals(command)) {
+//                System.exit(0);
+//                //flag=false;}
+//            }
+//
+//            else if("echo".equals(command))
+//            {
+//                System.out.println();
+//            }
+//
+//            else System.out.println(command+": command not found");
 
 
         }

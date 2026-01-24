@@ -14,12 +14,14 @@ public class Main {
 
             String []parts=input.split(" ",2);
             String command=parts[0];
-            String out=parts[1];
+
             // This "exit".equals(command) for NULL safe
             switch (command)
             {
                 case "exit" ->System.exit(0);
-                case "echo" ->System.out.println(out);
+                case "echo" ->{
+                    if(parts.length>1) System.out.println(parts[1]);
+                }
                 default -> System.out.println(command+": command not found");
             }
 //            if("exit".equals(command)) {

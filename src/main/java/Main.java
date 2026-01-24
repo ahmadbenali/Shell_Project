@@ -4,8 +4,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
 
-        boolean flag = true;
-        while(flag)
+        while(true)
         {
             System.out.print("$ ");
             Scanner scanner=new Scanner(System.in);
@@ -21,6 +20,13 @@ public class Main {
                 case "exit" ->System.exit(0);
                 case "echo" ->{
                     if(parts.length>1) System.out.println(parts[1]);
+                }
+                case "type" ->{
+                    if(parts.length>1) {
+                        if ("exit".equals(parts[1]) || "echo".equals(parts[1]) || "type".equals(parts[1]))
+                            System.out.println(parts[1] + " is a shell builtin");
+                        else System.out.println(parts[1]+ ": not found");
+                    }
                 }
                 default -> System.out.println(command+": command not found");
             }

@@ -97,12 +97,7 @@ public class Main {
                         }
                         else if(targetPath.startsWith("~"))
                         {
-                            String target=home;
-                            newDir=new File(currentPath,targetPath);
-                            if(newDir.exists() && newDir.isDirectory())
-                                currentPath= newDir.getCanonicalPath();
-                            else System.out.println("cd: " + parts[1] + ": No such file or directory");
-
+                           currentPath=home;
                         }
                         else{
                             newDir=new File(currentPath,targetPath);

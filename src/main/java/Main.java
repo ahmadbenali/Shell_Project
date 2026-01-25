@@ -6,6 +6,8 @@ public class Main {
 
     private static String currentPath=System.getProperty("user.dir");
 
+    private static final String home=System.getProperty("user.home");
+
     private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo","pwd");
 
     private static String getPath(String inputPath)
@@ -92,6 +94,11 @@ public class Main {
                                 // To convert java.io.file to java.lang.String
                                 currentPath=newDir.getAbsolutePath();
                             else System.out.println("cd: " + parts[1] + ": No such file or directory");
+                        }
+                        else if(targetPath.startsWith("~"))
+                        {
+                            currentPath=home;
+
                         }
                         else{
                             newDir=new File(currentPath,targetPath);

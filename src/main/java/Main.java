@@ -81,13 +81,14 @@ public class Main {
                 {
                     if(parts.length>1)
                     {
-                        String targetPath = getPath(parts[1]);
-                        if (targetPath != null) {
-                            File newDir =new File(targetPath);
-                            if(newDir.exists() && newDir.isDirectory())
+                        String targetPath = parts[1];
+                        File newDir =new File(targetPath);
+
+                        if(newDir.exists() && newDir.isDirectory())
                                 currentPath=newDir.getAbsolutePath();
-                        } else System.out.println("cd: " + parts[1] + ": No such file or directory");
+
                     }
+                    else System.out.println("cd: " + parts[1] + ": No such file or directory");
                 }
 
                 default -> {

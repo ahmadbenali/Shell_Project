@@ -97,7 +97,8 @@ public class Main {
                         }
                         else if(targetPath.startsWith("~"))
                         {
-                           currentPath=home;
+                           currentPath=System.getProperty("user.home");
+
                         }
                         else{
                             newDir=new File(currentPath,targetPath);

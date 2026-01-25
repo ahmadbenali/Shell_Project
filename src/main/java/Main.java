@@ -24,12 +24,14 @@ public class Main {
             // it simply creates a Java object that represents a potential file location.
             //Java intelligently combines these into a single path,
             //handling the slashes for you so you don't have to worry if dir ends with a / or not.
-            File f=new File(dir,inputPath);
-            if(f.exists() && f.canExecute())
-                return f.getAbsolutePath();
+            File target=new File(dir,inputPath);
+            if(target.exists() && target.canExecute())
+                return target.getAbsolutePath();
         }
         return null;
     }
+
+
 
     public static void main(String[] args) throws Exception {
 
@@ -63,7 +65,31 @@ public class Main {
                         }
                     }
                 }
-                default -> System.out.println(command+": command not found");
+                default -> {
+                    String path = getPath(command);
+
+                    if(path != null)
+                    {
+                        //It takes your array of strings (e.g., ["custom_exe_1234", "Alice"]) and tells Java,
+                        //"I want to run the program named in index 0 and pass the rest of the strings as arguments to it".
+                        ProcessBuilder pb=new ProcessBuilder(parts);
+
+                        //Without this, the program (like custom_exe_1234) would run in the background,
+                        // but you wouldn't see its output on your screen.
+                        // By using inheritIO, when the program prints "Hello Alice",
+                        // that message appears in your shell.
+                        pb.inheritIO();
+
+                        //It tells the Operating System to actually
+                        //find the executable and begin running it as a separate process.
+                        Process process=pb.start();
+
+                        //It forces your while(true) loop to stop and wait
+                        //until the external program finishes running.
+                        process.waitFor();
+                    }
+                    else System.out.println(command+": command not found");
+                }
             }
 
 

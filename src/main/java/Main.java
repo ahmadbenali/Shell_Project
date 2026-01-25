@@ -97,7 +97,11 @@ public class Main {
                         }
                         else if(targetPath.startsWith("~"))
                         {
-                            currentPath=home;
+                            String target=home;
+                            newDir=new File(currentPath,targetPath);
+                            if(newDir.exists() && newDir.isDirectory())
+                                currentPath= newDir.getCanonicalPath();
+                            else System.out.println("cd: " + parts[1] + ": No such file or directory");
 
                         }
                         else{

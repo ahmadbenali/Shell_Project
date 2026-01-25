@@ -5,7 +5,7 @@ import java.util.Set;
 public class Main {
 
 
-    private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo");
+    private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo","pwd");
 
     private static String getPath(String inputPath)
     {
@@ -64,6 +64,15 @@ public class Main {
                             else System.out.println(parts[1]+" not found");
                         }
                     }
+                }
+                case "pwd" ->
+                {
+                    //It returns the Current Working Directory
+                    //(the folder where the user was when they ran your Java program).
+                    //System.getProperty("user.name") return the name of user currently logged in os
+                    String currentDirectory = System.getProperty("user.dir");
+
+                    System.out.println(currentDirectory);
                 }
                 default -> {
                     String path = getPath(command);

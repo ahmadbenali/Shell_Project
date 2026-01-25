@@ -81,12 +81,27 @@ public class Main {
                 {
                     if(parts.length>1)
                     {
+                        //Absolute path
                         String targetPath = parts[1];
-                        File newDir =new File(targetPath);
+                        File newDir ;
 
-                        if(newDir.exists() && newDir.isDirectory())
+                        if(targetPath.startsWith("/"))
+                        {
+                            newDir=new File(targetPath);
+                            if(newDir.exists() && newDir.isDirectory())
+                                // To convert java.io.file to java.lang.String
                                 currentPath=newDir.getAbsolutePath();
-                        else System.out.println("cd: " + parts[1] + ": No such file or directory");
+                            else System.out.println("cd: " + parts[1] + ": No such file or directory");
+                        }
+                        else{
+                            newDir=new File(currentPath,targetPath);
+                            if(newDir.exists() && newDir.isDirectory())
+                                currentPath= newDir.getCanonicalPath();
+                            else System.out.println("cd: " + parts[1] + ": No such file or directory");
+
+                        }
+
+
                     }
 
                 }

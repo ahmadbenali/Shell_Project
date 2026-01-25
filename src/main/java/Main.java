@@ -86,9 +86,9 @@ public class Main {
 
                         if(newDir.exists() && newDir.isDirectory())
                                 currentPath=newDir.getAbsolutePath();
-
+                        else System.out.println("cd: " + parts[1] + ": No such file or directory");
                     }
-                    else System.out.println("cd: " + parts[1] + ": No such file or directory");
+
                 }
 
                 default -> {

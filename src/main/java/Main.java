@@ -4,6 +4,7 @@ import java.util.Set;
 
 public class Main {
 
+    private static String currentPath=System.getProperty("user.dir");
 
     private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo","pwd");
 
@@ -50,9 +51,11 @@ public class Main {
             switch (command)
             {
                 case "exit" ->System.exit(0);
+
                 case "echo" ->{
                     if(parts.length>1) System.out.println(input.substring(input.indexOf(' ')+1));
                 }
+
                 case "type" ->{
                     if(parts.length>1) {
                         if (Shell_BuiltIn.contains(parts[1]))
@@ -65,15 +68,28 @@ public class Main {
                         }
                     }
                 }
+
                 case "pwd" ->
                 {
                     //It returns the Current Working Directory
                     //(the folder where the user was when they ran your Java program).
                     //System.getProperty("user.name") return the name of user currently logged in os
-                    String currentDirectory = System.getProperty("user.dir");
-
-                    System.out.println(currentDirectory);
+                    System.out.println(currentPath);
                 }
+
+                case "cd" ->
+                {
+                    if(parts.length>1)
+                    {
+                        String targetPath = getPath(parts[1]);
+                        if (targetPath != null) {
+                            File newDir =new File(targetPath);
+                            if(newDir.exists() && newDir.isDirectory())
+                                currentPath=newDir.getAbsolutePath();
+                        } else System.out.println("cd: " + parts[1] + ": No such file or directory");
+                    }
+                }
+
                 default -> {
                     String path = getPath(command);
 

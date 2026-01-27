@@ -61,17 +61,21 @@ public class Main {
                         //substing need an index to cut like this EX echo hello world
                         //+1 for to start with h after first white space
                         String AfterEcho=input.substring(input.indexOf(" ")+1);
+                        String []Result=AfterEcho.split("' ");
+                        for(String re:Result)
+                        {
+                            if(AfterEcho.startsWith("'") && AfterEcho.endsWith("'"))
+                            {
+                                System.out.println(AfterEcho.replace("'",""));
+                            }
+                            else
+                            {
+                                // replaceAll in this fun you can use Regular expression
+                                String NewAfterEcho=AfterEcho.replaceAll("\\s+"," ");
+                                System.out.println(NewAfterEcho.replaceAll("'",""));
+                            }
+                        }
 
-                        if(AfterEcho.startsWith("'") && AfterEcho.endsWith("'"))
-                        {
-                            System.out.println(AfterEcho.replace("'",""));
-                        }
-                        else
-                        {
-                            // replaceAll in this fun you can use Regular expression
-                            String NewAfterEcho=AfterEcho.replaceAll("\\s+"," ");
-                            System.out.println(NewAfterEcho.replaceAll("'",""));
-                        }
                     }
                 }
 

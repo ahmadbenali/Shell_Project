@@ -97,7 +97,7 @@ public class Main {
                         }
                         else if(targetPath.equals("~"))
                         {
-                            currentPath=home;
+                            currentPath=System.getenv("HOME");
                         }
                         else{
                             newDir=new File(currentPath,targetPath);

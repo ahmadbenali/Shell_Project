@@ -55,7 +55,24 @@ public class Main {
                 case "exit" ->System.exit(0);
 
                 case "echo" ->{
-                    if(parts.length>1) System.out.println(input.substring(input.indexOf(' ')+1));
+                    if(parts.length>1)
+                    {
+                        // this used because whatever come after echo it will be printed
+                        //substing need an index to cut like this EX echo hello world
+                        //+1 for to start with h after first white space
+                        String AfterEcho=input.substring(input.indexOf(" ")+1);
+
+                        if(AfterEcho.startsWith("'") && AfterEcho.endsWith("'"))
+                        {
+                            System.out.println(AfterEcho.replace("'",""));
+                        }
+                        else
+                        {
+                            // replaceAll in this fun you can use Regular expression
+                            String NewAfterEcho=AfterEcho.replaceAll("\\s+"," ");
+                            System.out.println(NewAfterEcho.replaceAll("'",""));
+                        }
+                    }
                 }
 
                 case "type" ->{
@@ -97,7 +114,7 @@ public class Main {
                         }
                         else if(targetPath.equals("~"))
                         {
-                            currentPath=System.getenv("HOME");
+                            currentPath=home;
                         }
                         else{
                             newDir=new File(currentPath,targetPath);

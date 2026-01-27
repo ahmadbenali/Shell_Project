@@ -95,9 +95,9 @@ public class Main {
                                 currentPath=newDir.getAbsolutePath();
                             else System.out.println("cd: " + parts[1] + ": No such file or directory");
                         }
-                        else if(targetPath.startsWith("~"))
+                        else if(targetPath.equals("~"))
                         {
-                            currentPath = targetPath.replace("~", System.getProperty("user.home"));
+                            currentPath=home;
                         }
                         else{
                             newDir=new File(currentPath,targetPath);

@@ -65,32 +65,40 @@ public class Main {
                         //NOTE parts[1] is AfterEcho
                         //String AfterEcho=input.substring(input.indexOf(" ")+1);
                         String AfterEcho=parts[1];
-                        //But may be afterecho more than one thing to handle like 'hello  world' 'test''ahmad'
-                        if(AfterEcho.startsWith("'") && AfterEcho.endsWith("'"))
-                        {
-                            System.out.println(AfterEcho.replace("'",""));
+
+                        String[] partss = AfterEcho.split("(?<=')|(?=')");
+
+                        StringBuilder currentArg = new StringBuilder();
+
+                        boolean inQuotes = false;
+
+                        for (String part : partss) {
+
+                            if (part.equals("'")) {
+                                // Toggle the state: if true, becomes false; if false, becomes true
+                                inQuotes = !inQuotes;
+                                continue; // Skip the actual quote character
+                            }
+
+                            if (inQuotes) {
+                                // Inside quotes: keep everything exactly as it is
+                                currentArg.append(part);
+                            } else {
+                                // Outside quotes: handle spaces and concatenation
+                                if (part.contains(" ")) {
+                                    // If there's a space, it marks the end of an argument
+                                    // (Only if it's not trailing/leading, depending on your shell's trim logic)
+                                    System.out.print(currentArg.toString() + " ");
+                                    currentArg.setLength(0); // Clear for next argument
+                                } else {
+                                    // No space: concatenate (this handles 'shell''test' -> shelltest)
+                                    currentArg.append(part);
+                                }
+                            }
                         }
-                        else
-                        {
-                            // replaceAll in this fun you can use Regular expression
-                            String NewAfterEcho=AfterEcho.replaceAll("\\s+"," ");
-                            System.out.println(NewAfterEcho.replaceAll("'",""));
-                        }
-                        //Solution one
-//                        String[] Result = AfterEcho.split("(?<=')|(?=')");
-//                        for(String re:Result)
-//                        {
-//                            if(!re.equals("'")) {
-//
-//                                if (re.startsWith("'") && re.endsWith("'")) {
-//                                    System.out.println(re.replace("'", ""));
-//                                } else {
-//                                    // replaceAll in this fun you can use Regular expression
-//                                    String NewAfterEcho = re.replaceAll("\\s+", " ");
-//                                    System.out.println(NewAfterEcho.replaceAll("'", ""));
-//                                }
-//                            }
-//                        }
+                        // Print the last remaining piece
+                        System.out.println(currentArg.toString().trim());
+
 
                     }
                 }

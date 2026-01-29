@@ -46,7 +46,7 @@ public class Main {
             String input=scanner.nextLine();
 
 
-            String []parts=input.split(" ");
+            String []parts=input.split(" ",2);
             String command=parts[0];
 
             // This "exit".equals(command) for NULL safe
@@ -60,21 +60,37 @@ public class Main {
                         // this used because whatever come after echo it will be printed
                         //substing need an index to cut like this EX echo hello world
                         //+1 for to start with h after first white space
-                        String AfterEcho=input.substring(input.indexOf(" ")+1);
-                        String []Result=AfterEcho.split("' ");
-                        for(String re:Result)
+
+
+                        //NOTE parts[1] is AfterEcho
+                        //String AfterEcho=input.substring(input.indexOf(" ")+1);
+                        String AfterEcho=parts[1];
+                        //But may be afterecho more than one thing to handle like 'hello  world' 'test''ahmad'
+                        if(AfterEcho.startsWith("'") && AfterEcho.endsWith("'"))
                         {
-                            if(AfterEcho.startsWith("'") && AfterEcho.endsWith("'"))
-                            {
-                                System.out.println(AfterEcho.replace("'",""));
-                            }
-                            else
-                            {
-                                // replaceAll in this fun you can use Regular expression
-                                String NewAfterEcho=AfterEcho.replaceAll("\\s+"," ");
-                                System.out.println(NewAfterEcho.replaceAll("'",""));
-                            }
+                            System.out.println(AfterEcho.replace("'",""));
                         }
+                        else
+                        {
+                            // replaceAll in this fun you can use Regular expression
+                            String NewAfterEcho=AfterEcho.replaceAll("\\s+"," ");
+                            System.out.println(NewAfterEcho.replaceAll("'",""));
+                        }
+                        //Solution one
+//                        String[] Result = AfterEcho.split("(?<=')|(?=')");
+//                        for(String re:Result)
+//                        {
+//                            if(!re.equals("'")) {
+//
+//                                if (re.startsWith("'") && re.endsWith("'")) {
+//                                    System.out.println(re.replace("'", ""));
+//                                } else {
+//                                    // replaceAll in this fun you can use Regular expression
+//                                    String NewAfterEcho = re.replaceAll("\\s+", " ");
+//                                    System.out.println(NewAfterEcho.replaceAll("'", ""));
+//                                }
+//                            }
+//                        }
 
                     }
                 }

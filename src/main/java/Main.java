@@ -85,23 +85,23 @@ public class Main {
                 continue;
             }
             // Backslash detection
-            /*
+
             if (c == '\\' && !insideSingleQuote) {
                 escapeNext = true;
                 continue;
             }
-            */
+
 
             if (c == '\'' && !insideDoubleQuote) {
                 insideSingleQuote = !insideSingleQuote;
                 continue; // Don't add the quote itself
             }
-            /*
+
             if (c == '"' && !insideSingleQuote) {
                 insideDoubleQuote = !insideDoubleQuote;
                 continue; // Don't add the quote itself
             }
-             */
+
             if (c == ' ' && !insideSingleQuote && !insideDoubleQuote) {
                 if (!lastWasSpace && result.length() > 0) {
                     result.append(c);

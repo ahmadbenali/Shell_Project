@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class Main {
 
@@ -201,12 +198,17 @@ public class Main {
 
                 default -> {
                     String path = getPath(command);
-                    String ExternalCommand = processQuotes(parts[1]);
+
+                    List<String> fullCommand = new ArrayList<>();
+                    fullCommand.add(command);
+                    if (parts.length > 1) {
+                        fullCommand.addAll(Collections.singleton(processQuotes(parts[1])));
+                    }
                     if(path != null) {
                         try {
                             //It takes your array of strings (e.g., ["custom_exe_1234", "Alice"]) and tells Java,
                             //"I want to run the program named in index 0 and pass the rest of the strings as arguments to it".
-                            ProcessBuilder pb = new ProcessBuilder(ExternalCommand);
+                            ProcessBuilder pb = new ProcessBuilder(fullCommand);
 
                             //Without this, the program (like custom_exe_1234) would run in the background,
                             // but you wouldn't see its output on your screen.

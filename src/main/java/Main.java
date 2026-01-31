@@ -117,28 +117,54 @@ public class Main {
     }
 
     private static List<String> parseInput(String input) {
-        List<String> args = new ArrayList<>();
-        StringBuilder currentArg = new StringBuilder();
-        boolean insideSingleQuote = false;
+//        List<String> args = new ArrayList<>();
+//        StringBuilder currentArg = new StringBuilder();
+//        boolean insideSingleQuote = false;
+//        boolean insideDoubleQuote = false;
+//
+//        for (char c : input.toCharArray()) {
+//            if (c == '\'') {
+//                insideSingleQuote = !insideSingleQuote;
+//            } else if (c == ' ' && !insideSingleQuote) {
+//                if (!currentArg.isEmpty()) {
+//                    args.add(currentArg.toString());
+//                    currentArg = new StringBuilder();
+//                }
+//            } else {
+//                currentArg.append(c);
+//            }
+//        }
+//
+//        if (!currentArg.isEmpty()) {
+//            args.add(currentArg.toString());
+//        }
+//        return args;
+            List<String> args = new ArrayList<>();
+            StringBuilder current = new StringBuilder();
+            boolean inSingle = false;
+            boolean inDouble = false;
 
-        for (char c : input.toCharArray()) {
-            if (c == '\'') {
-                insideSingleQuote = !insideSingleQuote;
-            } else if (c == ' ' && !insideSingleQuote) {
-                if (!currentArg.isEmpty()) {
-                    args.add(currentArg.toString());
-                    currentArg = new StringBuilder();
+            for (int i = 0; i < input.length(); i++) {
+                char c = input.charAt(i);
+
+                if (c == '\'' && !inDouble) {
+                    inSingle = !inSingle; // Toggle single quote state
+                } else if (c == '"' && !inSingle) {
+                    inDouble = !inDouble; // Toggle double quote state
+                } else if (c == ' ' && !inSingle && !inDouble) {
+                    // Space outside quotes means a new argument starts
+                    if (current.length() > 0) {
+                        args.add(current.toString());
+                        current.setLength(0);
+                    }
+                } else {
+                    current.append(c);
                 }
-            } else {
-                currentArg.append(c);
             }
+            if (current.length() > 0) args.add(current.toString());
+            return args;
         }
 
-        if (!currentArg.isEmpty()) {
-            args.add(currentArg.toString());
-        }
-        return args;
-    }
 
     private static void TypeCommand(String Input) {
         if (Shell_BuiltIn.contains(Input))

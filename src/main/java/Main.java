@@ -114,31 +114,10 @@ public class Main {
         }
 
         return result.toString();
+
     }
 
     private static List<String> parseInput(String input) {
-//        List<String> args = new ArrayList<>();
-//        StringBuilder currentArg = new StringBuilder();
-//        boolean insideSingleQuote = false;
-//        boolean insideDoubleQuote = false;
-//
-//        for (char c : input.toCharArray()) {
-//            if (c == '\'') {
-//                insideSingleQuote = !insideSingleQuote;
-//            } else if (c == ' ' && !insideSingleQuote) {
-//                if (!currentArg.isEmpty()) {
-//                    args.add(currentArg.toString());
-//                    currentArg = new StringBuilder();
-//                }
-//            } else {
-//                currentArg.append(c);
-//            }
-//        }
-//
-//        if (!currentArg.isEmpty()) {
-//            args.add(currentArg.toString());
-//        }
-//        return args;
             List<String> args = new ArrayList<>();
             StringBuilder current = new StringBuilder();
             boolean inSingle = false;

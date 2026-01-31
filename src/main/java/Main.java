@@ -21,6 +21,7 @@ public class Main {
         return input;
 
     }
+
     private static String getPath(String inputPath)
     {
         //path is  Env variable, your program will ask os to check every file inside PATH
@@ -115,6 +116,30 @@ public class Main {
         return result.toString();
     }
 
+    private static List<String> parseInput(String input) {
+        List<String> args = new ArrayList<>();
+        StringBuilder currentArg = new StringBuilder();
+        boolean insideSingleQuote = false;
+
+        for (char c : input.toCharArray()) {
+            if (c == '\'') {
+                insideSingleQuote = !insideSingleQuote;
+            } else if (c == ' ' && !insideSingleQuote) {
+                if (!currentArg.isEmpty()) {
+                    args.add(currentArg.toString());
+                    currentArg = new StringBuilder();
+                }
+            } else {
+                currentArg.append(c);
+            }
+        }
+
+        if (!currentArg.isEmpty()) {
+            args.add(currentArg.toString());
+        }
+        return args;
+    }
+
     private static void TypeCommand(String Input) {
         if (Shell_BuiltIn.contains(Input))
             System.out.println(Input + " is a shell builtin");
@@ -204,7 +229,7 @@ public class Main {
                     List<String> fullCommand = new ArrayList<>();
                     fullCommand.add(command);
                     if (parts.length > 1) {
-                        fullCommand.addAll(Collections.singleton(processQuotes(parts[1])));
+                        fullCommand.addAll(parseInput(parts[1]));
                     }
                     if(path != null) {
                         try {

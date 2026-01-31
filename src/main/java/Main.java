@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -114,8 +116,7 @@ public class Main {
         return result.toString();
     }
 
-    private static void TypeCommand(String Input)
-    {
+    private static void TypeCommand(String Input) {
         if (Shell_BuiltIn.contains(Input))
             System.out.println(Input + " is a shell builtin");
         else
@@ -200,13 +201,12 @@ public class Main {
 
                 default -> {
                     String path = getPath(command);
-
-                    if(path != null)
-                    {
+                    String ExternalCommand = processQuotes(parts[1]);
+                    if(path != null) {
                         try {
                             //It takes your array of strings (e.g., ["custom_exe_1234", "Alice"]) and tells Java,
                             //"I want to run the program named in index 0 and pass the rest of the strings as arguments to it".
-                            ProcessBuilder pb = new ProcessBuilder(parts);
+                            ProcessBuilder pb = new ProcessBuilder(ExternalCommand);
 
                             //Without this, the program (like custom_exe_1234) would run in the background,
                             // but you wouldn't see its output on your screen.
@@ -222,7 +222,9 @@ public class Main {
                             //until the external program finishes running.
                             process.waitFor();
                         }
-                        catch (Exception e){}
+                        catch (Exception e){
+                            System.exit(0);
+                        }
                     }
                     else System.out.println(command+": command not found");
                 }

@@ -1,3 +1,6 @@
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -10,7 +13,7 @@ public class Main {
 
     private static final String home=System.getProperty("user.home");
 
-    private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo","pwd");
+    private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo","pwd","cd");
 
     private static String InitializeInput()
     {
@@ -22,7 +25,9 @@ public class Main {
 
     }
 
-    private static String getPath(String inputPath)
+    //@Nullable indicate that the variable can be Null
+    //because getPath  it returns null if the command isn't found in the PATH.
+    private static @Nullable String getPath(String inputPath)
     {
         //path is  Env variable, your program will ask os to check every file inside PATH
         //specifying a set of directories where executable programs are located.
@@ -66,7 +71,8 @@ public class Main {
         System.out.println(output);
     }
 
-    private static String processQuotes(String Input)
+    //@NotNull indicate that the variable can't be Null
+    private static @NotNull String processQuotes(@NotNull String Input)
     {
         StringBuilder result = new StringBuilder();
         boolean insideSingleQuote = false;
@@ -117,7 +123,8 @@ public class Main {
 
     }
 
-    private static List<String> parseInput(String input) {
+    private static @NotNull List<String> parseInput(@NotNull String input)
+    {
         List<String> args = new ArrayList<>();
         StringBuilder current = new StringBuilder();
         boolean inSingle = false;
@@ -153,8 +160,8 @@ public class Main {
         return args;
     }
 
-
-    private static void TypeCommand(String Input) {
+    private static void TypeCommand(String Input)
+    {
         if (Shell_BuiltIn.contains(Input))
             System.out.println(Input + " is a shell builtin");
         else
@@ -165,7 +172,8 @@ public class Main {
         }
     }
 
-    private static void ChangeDirectory(String[] parts) throws IOException {
+    private static void ChangeDirectory(String @NotNull [] parts) throws IOException
+    {
         String targetPath = parts[1];
         File newDir ;
 
@@ -190,7 +198,42 @@ public class Main {
         }
     }
 
+    private static void ExecuteExternalCommand(String command,String @NotNull [] parts)
+    {
+        String path = getPath(command);
 
+        List<String> fullCommand = new ArrayList<>();
+        fullCommand.add(command);
+        if (parts.length > 1) {
+            fullCommand.addAll(parseInput(parts[1]));
+        }
+        if(path != null) {
+            try {
+                //It takes your array of strings (e.g., ["custom_exe_1234", "Alice"]) and tells Java,
+                //"I want to run the program named in index 0 and pass the rest of the strings as arguments to it".
+                ProcessBuilder pb = new ProcessBuilder(fullCommand);
+
+                pb.directory(new File(currentPath));
+                //Without this, the program (like custom_exe_1234) would run in the background,
+                // but you wouldn't see its output on your screen.
+                // By using inheritIO, when the program prints "Hello Alice",
+                // that message appears in your shell.
+                pb.inheritIO();
+
+                //It tells the Operating System to actually
+                //find the executable and begin running it as a separate process.
+                pb.start().waitFor();
+
+                //It forces your while(true) loop to stop and wait
+                //until the external program finishes running.
+
+            }
+            catch (Exception e){
+                System.exit(0);
+            }
+        }
+        else System.out.println(command+": command not found");
+    }
 
     public static void main(String[] args) throws Exception {
 
@@ -238,39 +281,7 @@ public class Main {
                 }
 
                 default -> {
-                    String path = getPath(command);
-
-                    List<String> fullCommand = new ArrayList<>();
-                    fullCommand.add(command);
-                    if (parts.length > 1) {
-                        fullCommand.addAll(parseInput(parts[1]));
-                    }
-                    if(path != null) {
-                        try {
-                            //It takes your array of strings (e.g., ["custom_exe_1234", "Alice"]) and tells Java,
-                            //"I want to run the program named in index 0 and pass the rest of the strings as arguments to it".
-                            ProcessBuilder pb = new ProcessBuilder(fullCommand);
-
-                            pb.directory(new File(currentPath));
-                            //Without this, the program (like custom_exe_1234) would run in the background,
-                            // but you wouldn't see its output on your screen.
-                            // By using inheritIO, when the program prints "Hello Alice",
-                            // that message appears in your shell.
-                            pb.inheritIO();
-
-                            //It tells the Operating System to actually
-                            //find the executable and begin running it as a separate process.
-                            pb.start().waitFor();
-
-                            //It forces your while(true) loop to stop and wait
-                            //until the external program finishes running.
-
-                        }
-                        catch (Exception e){
-                            System.exit(0);
-                        }
-                    }
-                    else System.out.println(command+": command not found");
+                    ExecuteExternalCommand(command,parts);
                 }
             }
 

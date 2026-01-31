@@ -118,31 +118,40 @@ public class Main {
     }
 
     private static List<String> parseInput(String input) {
-            List<String> args = new ArrayList<>();
-            StringBuilder current = new StringBuilder();
-            boolean inSingle = false;
-            boolean inDouble = false;
+        List<String> args = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        boolean inSingle = false;
+        boolean inDouble = false;
+        boolean escaped = false; // Flag to track if the current character is escaped
 
-            for (int i = 0; i < input.length(); i++) {
-                char c = input.charAt(i);
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
 
-                if (c == '\'' && !inDouble) {
-                    inSingle = !inSingle; // Toggle single quote state
-                } else if (c == '"' && !inSingle) {
-                    inDouble = !inDouble; // Toggle double quote state
-                } else if (c == ' ' && !inSingle && !inDouble) {
-                    // Space outside quotes means a new argument starts
-                    if (current.length() > 0) {
-                        args.add(current.toString());
-                        current.setLength(0);
-                    }
-                } else {
-                    current.append(c);
+            if (escaped) {
+                // If the previous char was '\', add this char literally and reset flag
+                current.append(c);
+                escaped = false;
+            } else if (c == '\\' && !inSingle) {
+                // Outside single quotes, '\' triggers escaping for the next char
+                // Note: In double quotes, '\' only escapes certain chars, but for
+                // CodeCrafters, usually escaping all is accepted or required.
+                escaped = true;
+            } else if (c == '\'' && !inDouble) {
+                inSingle = !inSingle;
+            } else if (c == '"' && !inSingle) {
+                inDouble = !inDouble;
+            } else if (c == ' ' && !inSingle && !inDouble) {
+                if (current.length() > 0) {
+                    args.add(current.toString());
+                    current.setLength(0);
                 }
+            } else {
+                current.append(c);
             }
-            if (current.length() > 0) args.add(current.toString());
-            return args;
         }
+        if (current.length() > 0) args.add(current.toString());
+        return args;
+    }
 
 
     private static void TypeCommand(String Input) {

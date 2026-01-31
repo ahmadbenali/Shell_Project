@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import static java.lang.System.*;
+
 
 public class Main {
 
@@ -164,7 +166,7 @@ public class Main {
 
             // This "exit".equals(command) for NULL safe
             switch (command) {
-                case "exit" ->System.exit(0);
+                case "exit" ->exit(0);
 
                 case "echo" ->{
                     if(parts.length>1)

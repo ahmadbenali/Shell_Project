@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -10,6 +11,15 @@ public class Main {
 
     private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo","pwd");
 
+    private static String InitializeInput()
+    {
+        System.out.print("$ ");
+        Scanner scanner=new Scanner(System.in);
+        String input=scanner.nextLine();
+
+        return input;
+
+    }
     private static String getPath(String inputPath)
     {
         //path is  Env variable, your program will ask os to check every file inside PATH
@@ -34,6 +44,113 @@ public class Main {
         return null;
     }
 
+    private static void HandleBasicEcho(String AfterEcho)
+    {
+            if(AfterEcho.startsWith("'") && AfterEcho.endsWith("'"))
+            {
+                System.out.println(AfterEcho.replaceAll("'",""));
+            }
+            else
+            {
+                String NewAfterEcho = AfterEcho.replaceAll("\\s+", " ");
+                System.out.println(NewAfterEcho.replaceAll("'", ""));
+            }
+
+    }
+
+    private static void HandleEcho(String parts)
+    {
+        String output = processQuotes(parts);
+        System.out.println(output);
+    }
+
+    private static String processQuotes(String Input)
+    {
+        StringBuilder result = new StringBuilder();
+        boolean insideSingleQuote = false;
+        boolean insideDoubleQuote = false;
+        boolean escapeNext = false;//should next chat be escaped ?
+        boolean lastWasSpace = false;
+
+
+        for (int i = 0; i < Input.length(); i++) {
+            char c = Input.charAt(i);
+
+
+            if (escapeNext) {
+                result.append(c);
+                escapeNext = false;
+                continue;
+            }
+            // Backslash detection
+            /*
+            if (c == '\\' && !insideSingleQuote) {
+                escapeNext = true;
+                continue;
+            }
+            */
+
+            if (c == '\'' && !insideDoubleQuote) {
+                insideSingleQuote = !insideSingleQuote;
+                continue; // Don't add the quote itself
+            }
+            /*
+            if (c == '"' && !insideSingleQuote) {
+                insideDoubleQuote = !insideDoubleQuote;
+                continue; // Don't add the quote itself
+            }
+             */
+            if (c == ' ' && !insideSingleQuote && !insideDoubleQuote) {
+                if (!lastWasSpace && result.length() > 0) {
+                    result.append(c);
+                    lastWasSpace = true;
+                }
+                continue;
+            }
+            result.append(c);
+            lastWasSpace = false;
+        }
+
+        return result.toString();
+    }
+
+    private static void TypeCommand(String Input)
+    {
+        if (Shell_BuiltIn.contains(Input))
+            System.out.println(Input + " is a shell builtin");
+        else
+        {
+            String path=getPath(Input);
+            if(path !=null) System.out.println(Input +" is "+path);
+            else System.out.println(Input +" not found");
+        }
+    }
+
+    private static void ChangeDirectory(String[] parts) throws IOException {
+        String targetPath = parts[1];
+        File newDir ;
+
+        if(targetPath.startsWith("/"))
+        {
+            newDir=new File(targetPath);
+            if(newDir.exists() && newDir.isDirectory())
+                // To convert java.io.file to java.lang.String
+                currentPath=newDir.getAbsolutePath();
+            else System.out.println("cd: " + parts[1] + ": No such file or directory");
+        }
+        else if(targetPath.equals("~"))
+        {
+            currentPath=home;
+        }
+        else{
+            newDir=new File(currentPath,targetPath);
+            if(newDir.exists() && newDir.isDirectory())
+                currentPath= newDir.getCanonicalPath();
+            else System.out.println("cd: " + parts[1] + ": No such file or directory");
+
+        }
+    }
+
 
 
     public static void main(String[] args) throws Exception {
@@ -41,118 +158,42 @@ public class Main {
 
         while(true)
         {
-            System.out.print("$ ");
-            Scanner scanner=new Scanner(System.in);
-            String input=scanner.nextLine();
+            String input =InitializeInput();
 
-
+            //List<String> parts=new ArrayList<>(List.of(input.split(" ", 2)));
             String []parts=input.split(" ",2);
-            String command=parts[0];
+            String command= parts[0];
 
             // This "exit".equals(command) for NULL safe
-            switch (command)
-            {
+            switch (command) {
                 case "exit" ->System.exit(0);
 
                 case "echo" ->{
                     if(parts.length>1)
                     {
-                        // this used because whatever come after echo it will be printed
-                        //substing need an index to cut like this EX echo hello world
-                        //+1 for to start with h after first white space
-
-
-                        //NOTE parts[1] is AfterEcho
-                        //String AfterEcho=input.substring(input.indexOf(" ")+1);
-                        String AfterEcho=parts[1];
-
-                        String[] partss = AfterEcho.split("(?<=')|(?=')");
-
-                        StringBuilder currentArg = new StringBuilder();
-
-                        boolean inQuotes = false;
-
-                        for (String part : partss) {
-
-                            if (part.equals("'")) {
-                                // Toggle the state: if true, becomes false; if false, becomes true
-                                inQuotes = !inQuotes;
-                                continue; // Skip the actual quote character
-                            }
-
-                            if (inQuotes) {
-                                // Inside quotes: keep everything exactly as it is
-                                currentArg.append(part);
-                            } else {
-                                // Outside quotes: handle spaces and concatenation
-                                if (part.contains(" ")) {
-                                    // If there's a space, it marks the end of an argument
-                                    // (Only if it's not trailing/leading, depending on your shell's trim logic)
-                                    System.out.print(currentArg.toString() + " ");
-                                    currentArg.setLength(0); // Clear for next argument
-                                } else {
-                                    // No space: concatenate (this handles 'shell''test' -> shelltest)
-                                    currentArg.append(part);
-                                }
-                            }
-                        }
-                        // Print the last remaining piece
-                        System.out.println(currentArg.toString().trim());
-
-
+                        HandleEcho(parts[1]);
                     }
+                    else System.out.println();
                 }
 
                 case "type" ->{
                     if(parts.length>1) {
-                        if (Shell_BuiltIn.contains(parts[1]))
-                            System.out.println(parts[1] + " is a shell builtin");
-                        else
-                        {
-                            String path=getPath(parts[1]);
-                            if(path !=null) System.out.println(parts[1]+" is "+path);
-                            else System.out.println(parts[1]+" not found");
-                        }
+                       TypeCommand(parts[1]);
                     }
                 }
 
-                case "pwd" ->
-                {
+                case "pwd" -> {
                     //It returns the Current Working Directory
                     //(the folder where the user was when they ran your Java program).
                     //System.getProperty("user.name") return the name of user currently logged in os
                     System.out.println(currentPath);
                 }
 
-                case "cd" ->
-                {
+                case "cd" -> {
                     if(parts.length>1)
                     {
                         //Absolute path
-                        String targetPath = parts[1];
-                        File newDir ;
-
-                        if(targetPath.startsWith("/"))
-                        {
-                            newDir=new File(targetPath);
-                            if(newDir.exists() && newDir.isDirectory())
-                                // To convert java.io.file to java.lang.String
-                                currentPath=newDir.getAbsolutePath();
-                            else System.out.println("cd: " + parts[1] + ": No such file or directory");
-                        }
-                        else if(targetPath.equals("~"))
-                        {
-                            currentPath=home;
-                        }
-                        else{
-                            newDir=new File(currentPath,targetPath);
-                            if(newDir.exists() && newDir.isDirectory())
-                                currentPath= newDir.getCanonicalPath();
-                            else System.out.println("cd: " + parts[1] + ": No such file or directory");
-
-                        }
-
-
+                        ChangeDirectory(parts);
                     }
 
                 }

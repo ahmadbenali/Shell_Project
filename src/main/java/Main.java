@@ -64,7 +64,9 @@ public class Main {
 
     private static void HandleEcho(String parts)
     {
-        String output = String.join(" ",parseInput(parts));
+        //String output = String.join(" ",parseInput(parts));
+        String output=processQuotes(parts);
+
         System.out.println(output);
     }
 
@@ -133,9 +135,10 @@ public class Main {
     private static List<String> parseInput(String input) {
         List<String> args = new ArrayList<>();
         StringBuilder current = new StringBuilder();
-        boolean inSingle = false;
-        boolean inDouble = false;
-        boolean escaped = false;
+
+        boolean inSingle = false;//inside Single
+        boolean inDouble = false;//inside double
+        boolean escaped = false;//space
 
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
@@ -258,8 +261,10 @@ public class Main {
 
             //List<String> parts=new ArrayList<>(List.of(input.split(" ", 2)));
 
+            // will be 0 1 and 2
             List<String> parts=parseInput(input);
             //String []parts=input.split(" ",2);
+
             String command= parts.get(0);
 
             // This "exit".equals(command) for NULL safe

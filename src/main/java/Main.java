@@ -64,7 +64,7 @@ public class Main {
 
     private static void HandleEcho(String parts)
     {
-        String output = processQuotes(parts);
+        String output = String.join(" ",parseInput(parts));
         System.out.println(output);
     }
 
@@ -141,26 +141,25 @@ public class Main {
             char c = input.charAt(i);
 
             if (escaped) {
-                // Inside double quotes, only specific chars are escaped
+                // Check double quote rules: \ only escapes " \ $ ` and newline
                 if (inDouble) {
                     if (c == '"' || c == '\\' || c == '$' || c == '`') {
-                        current.append(c); // Remove \ and add char
+                        current.append(c);
                     } else {
-                        current.append('\\').append(c); // Keep \ and add char
+                        current.append('\\').append(c); // Keep literal backslash
                     }
                 } else {
-                    // Outside quotes, \ always escapes the next char
-                    current.append(c);
+                    current.append(c); // Outside quotes, \ always escapes
                 }
                 escaped = false;
             } else if (c == '\\' && !inSingle) {
-                // Check if we should trigger escaping
-                escaped = true;
+                escaped = true; // Trigger escape mode for next char
             } else if (c == '\'' && !inDouble) {
-                inSingle = !inSingle;
+                inSingle = !inSingle; // Toggle single quotes
             } else if (c == '"' && !inSingle) {
-                inDouble = !inDouble;
+                inDouble = !inDouble; // Toggle double quotes
             } else if (c == ' ' && !inSingle && !inDouble) {
+                // Split into new argument on unquoted space
                 if (current.length() > 0) {
                     args.add(current.toString());
                     current.setLength(0);
@@ -169,10 +168,9 @@ public class Main {
                 current.append(c);
             }
         }
-        // Handle a trailing backslash if the input ends with \
-        if (escaped) current.append('\\');
-
+        if (escaped) current.append('\\'); // Handle trailing backslash
         if (current.length() > 0) args.add(current.toString());
+
         return args;
     }
     //done
@@ -272,6 +270,7 @@ public class Main {
                     if(parts.size()>1)
                     {
                         HandleEcho(parts.get(1));
+                        //HandleEcho(String.join(" ", parts.subList(1, parts.size())));
                     }
                     else System.out.println();
                 }

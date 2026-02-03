@@ -83,10 +83,20 @@ public class Main {
 
 
             if (escapeNext) {
-                result.append(c);
+                // Inside double quotes, only specific chars are escaped
+                if (insideDoubleQuote) {
+                    if (c == '"' || c == '\\' || c == '$' || c == '`') {
+                        result.append(c); // Remove \ and add char
+                    } else {
+                        result.append('\\').append(c); // Keep \ and add char
+                    }
+                } else {
+                    // Outside quotes, \ always escapes the next char
+                    result.append(c);
+                }
                 escapeNext = false;
-                continue;
             }
+
             // Backslash detection
 
             if (c == '\\' && !insideSingleQuote) {

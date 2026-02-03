@@ -199,16 +199,16 @@ public class Main {
     {
         String path = getPath(command);
 
-        List<String> fullCommand = new ArrayList<>();
-        fullCommand.add(command);
+       // List<String> fullCommand = new ArrayList<>();
+        //fullCommand.add(command);
         if (parts.size() > 1) {
-            fullCommand.addAll(parseInput(parts.get(1)));
+           // fullCommand.addAll(parseInput(parts.get(1)));
         }
         if(path != null) {
             try {
                 //It takes your array of strings (e.g., ["custom_exe_1234", "Alice"]) and tells Java,
                 //"I want to run the program named in index 0 and pass the rest of the strings as arguments to it".
-                ProcessBuilder pb = new ProcessBuilder(fullCommand);
+                ProcessBuilder pb = new ProcessBuilder(parts);
 
                 pb.directory(new File(currentPath));
                 //Without this, the program (like custom_exe_1234) would run in the background,
@@ -280,6 +280,8 @@ public class Main {
                 }
 
                 default -> {
+                    out.println(command);
+                    out.println(parts.get(1));
                     ExecuteExternalCommand(command,parts);
                 }
             }

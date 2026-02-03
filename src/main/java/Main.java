@@ -120,25 +120,31 @@ public class Main {
 
     }
 
-    private static  List<String> parseInput( String input)
-    {
+    private static List<String> parseInput(String input) {
         List<String> args = new ArrayList<>();
         StringBuilder current = new StringBuilder();
         boolean inSingle = false;
         boolean inDouble = false;
-        boolean escaped = false; // Flag to track if the current character is escaped
+        boolean escaped = false;
 
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
 
             if (escaped) {
-                // If the previous char was '\', add this char literally and reset flag
-                current.append(c);
+                // Inside double quotes, only specific chars are escaped
+                if (inDouble) {
+                    if (c == '"' || c == '\\' || c == '$' || c == '`') {
+                        current.append(c); // Remove \ and add char
+                    } else {
+                        current.append('\\').append(c); // Keep \ and add char
+                    }
+                } else {
+                    // Outside quotes, \ always escapes the next char
+                    current.append(c);
+                }
                 escaped = false;
             } else if (c == '\\' && !inSingle) {
-                // Outside single quotes, '\' triggers escaping for the next char
-                // Note: In double quotes, '\' only escapes certain chars, but for
-                // CodeCrafters, usually escaping all is accepted or required.
+                // Check if we should trigger escaping
                 escaped = true;
             } else if (c == '\'' && !inDouble) {
                 inSingle = !inSingle;
@@ -153,6 +159,9 @@ public class Main {
                 current.append(c);
             }
         }
+        // Handle a trailing backslash if the input ends with \
+        if (escaped) current.append('\\');
+
         if (current.length() > 0) args.add(current.toString());
         return args;
     }

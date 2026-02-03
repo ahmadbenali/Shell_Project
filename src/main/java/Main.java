@@ -71,7 +71,7 @@ public class Main {
     }
 
     //@NotNull indicate that the variable can't be Null
-    private static  String processQuotes( String Input)
+    private static String processQuotes( String Input)
     {
         StringBuilder result = new StringBuilder();
         boolean insideSingleQuote = false;
@@ -79,57 +79,72 @@ public class Main {
         boolean escapeNext = false;//should next chat be escaped ?
         boolean lastWasSpace = false;
 
-
         for (int i = 0; i < Input.length(); i++) {
             char c = Input.charAt(i);
-
 
             if (escapeNext) {
                 // Inside double quotes, only specific chars are escaped
                 if (insideDoubleQuote) {
+
                     if (c == '"' || c == '\\' || c == '$' || c == '`') {
+
                         result.append(c); // Remove \ and add char
+
                     } else {
+
                         result.append('\\').append(c); // Keep \ and add char
+
                     }
+
                 } else {
                     // Outside quotes, \ always escapes the next char
                     result.append(c);
+
                 }
+
                 escapeNext = false;
-            }
 
+            }
             // Backslash detection
-
             if (c == '\\' && !insideSingleQuote) {
+
                 escapeNext = true;
+
                 continue;
+
             }
-
-
             if (c == '\'' && !insideDoubleQuote) {
+
                 insideSingleQuote = !insideSingleQuote;
-                continue; // Don't add the quote itself
-            }
 
+                continue; // Don't add the quote itself
+
+            }
             if (c == '"' && !insideSingleQuote) {
-                insideDoubleQuote = !insideDoubleQuote;
-                continue; // Don't add the quote itself
-            }
 
+                insideDoubleQuote = !insideDoubleQuote;
+
+                continue; // Don't add the quote itself
+
+            }
             if (c == ' ' && !insideSingleQuote && !insideDoubleQuote) {
+
                 if (!lastWasSpace && result.length() > 0) {
+
                     result.append(c);
+
                     lastWasSpace = true;
+
                 }
                 continue;
             }
+
             result.append(c);
+
             lastWasSpace = false;
+
         }
-
         return result.toString();
-
     }
 
     private static List<String> parseInput(String input)

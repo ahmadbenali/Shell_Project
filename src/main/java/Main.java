@@ -132,7 +132,8 @@ public class Main {
 
     }
 
-    private static List<String> parseInput(String input) {
+    private static List<String> parseInput(String input)
+    {
         List<String> args = new ArrayList<>();
         StringBuilder current = new StringBuilder();
 
@@ -176,7 +177,7 @@ public class Main {
 
         return args;
     }
-    //done
+
     private static void TypeCommand(String Input)
     {
         if (Shell_BuiltIn.contains(Input))
@@ -262,6 +263,7 @@ public class Main {
             //List<String> parts=new ArrayList<>(List.of(input.split(" ", 2)));
 
             // will be 0 1 and 2
+            //problem in ECHO
             List<String> parts=parseInput(input);
             //String []parts=input.split(" ",2);
 
@@ -274,7 +276,8 @@ public class Main {
                 case "echo" ->{
                     if(parts.size()>1)
                     {
-                        HandleEcho(parts.get(1));
+                        String []AfterEcho=input.split(" ",2);
+                        HandleEcho(AfterEcho[1]);
                         //HandleEcho(String.join(" ", parts.subList(1, parts.size())));
                     }
                     else System.out.println();

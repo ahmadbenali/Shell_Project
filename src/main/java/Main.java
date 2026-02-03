@@ -10,7 +10,7 @@ public class Main {
 
     private static final String home=System.getProperty("user.home");
 
-    private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo","pwd");
+    private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo","pwd","cd");
 
     private static String InitializeInput()
     {
@@ -22,7 +22,9 @@ public class Main {
 
     }
 
-    private static String getPath(String inputPath)
+    //@Nullable indicate that the variable can be Null
+    //because getPath  it returns null if the command isn't found in the PATH.
+    private static  String getPath(String inputPath)
     {
         //path is  Env variable, your program will ask os to check every file inside PATH
         //specifying a set of directories where executable programs are located.
@@ -66,7 +68,8 @@ public class Main {
         System.out.println(output);
     }
 
-    private static String processQuotes(String Input)
+    //@NotNull indicate that the variable can't be Null
+    private static  String processQuotes( String Input)
     {
         StringBuilder result = new StringBuilder();
         boolean insideSingleQuote = false;
@@ -117,7 +120,8 @@ public class Main {
 
     }
 
-    private static List<String> parseInput(String input) {
+    private static  List<String> parseInput( String input)
+    {
         List<String> args = new ArrayList<>();
         StringBuilder current = new StringBuilder();
         boolean inSingle = false;
@@ -153,8 +157,8 @@ public class Main {
         return args;
     }
 
-
-    private static void TypeCommand(String Input) {
+    private static void TypeCommand(String Input)
+    {
         if (Shell_BuiltIn.contains(Input))
             System.out.println(Input + " is a shell builtin");
         else
@@ -165,8 +169,9 @@ public class Main {
         }
     }
 
-    private static void ChangeDirectory(String[] parts) throws IOException {
-        String targetPath = parts[1];
+    private static void ChangeDirectory(List<String>  parts) throws IOException
+    {
+        String targetPath = parts.get(1);
         File newDir ;
 
         if(targetPath.startsWith("/"))
@@ -175,7 +180,7 @@ public class Main {
             if(newDir.exists() && newDir.isDirectory())
                 // To convert java.io.file to java.lang.String
                 currentPath=newDir.getAbsolutePath();
-            else System.out.println("cd: " + parts[1] + ": No such file or directory");
+            else System.out.println("cd: " + parts.get(1) + ": No such file or directory");
         }
         else if(targetPath.equals("~"))
         {
@@ -185,12 +190,47 @@ public class Main {
             newDir=new File(currentPath,targetPath);
             if(newDir.exists() && newDir.isDirectory())
                 currentPath= newDir.getCanonicalPath();
-            else System.out.println("cd: " + parts[1] + ": No such file or directory");
+            else System.out.println("cd: " + parts.get(1) + ": No such file or directory");
 
         }
     }
 
+    private static void ExecuteExternalCommand(String command,List<String>  parts)
+    {
+        String path = getPath(command);
 
+        List<String> fullCommand = new ArrayList<>();
+        fullCommand.add(command);
+        if (parts.size() > 1) {
+            fullCommand.addAll(parseInput(parts.get(1)));
+        }
+        if(path != null) {
+            try {
+                //It takes your array of strings (e.g., ["custom_exe_1234", "Alice"]) and tells Java,
+                //"I want to run the program named in index 0 and pass the rest of the strings as arguments to it".
+                ProcessBuilder pb = new ProcessBuilder(fullCommand);
+
+                pb.directory(new File(currentPath));
+                //Without this, the program (like custom_exe_1234) would run in the background,
+                // but you wouldn't see its output on your screen.
+                // By using inheritIO, when the program prints "Hello Alice",
+                // that message appears in your shell.
+                pb.inheritIO();
+
+                //It tells the Operating System to actually
+                //find the executable and begin running it as a separate process.
+                pb.start().waitFor();
+
+                //It forces your while(true) loop to stop and wait
+                //until the external program finishes running.
+
+            }
+            catch (Exception e){
+                System.exit(0);
+            }
+        }
+        else System.out.println(command+": command not found");
+    }
 
     public static void main(String[] args) throws Exception {
 
@@ -200,24 +240,26 @@ public class Main {
             String input =InitializeInput();
 
             //List<String> parts=new ArrayList<>(List.of(input.split(" ", 2)));
-            String []parts=input.split(" ",2);
-            String command= parts[0];
+
+            List<String> parts=parseInput(input);
+            //String []parts=input.split(" ",2);
+            String command= parts.get(0);
 
             // This "exit".equals(command) for NULL safe
             switch (command) {
                 case "exit" ->exit(0);
 
                 case "echo" ->{
-                    if(parts.length>1)
+                    if(parts.size()>1)
                     {
-                        HandleEcho(parts[1]);
+                        HandleEcho(parts.get(1));
                     }
                     else System.out.println();
                 }
 
                 case "type" ->{
-                    if(parts.length>1) {
-                       TypeCommand(parts[1]);
+                    if(parts.size()>1) {
+                       TypeCommand(parts.get(1));
                     }
                 }
 
@@ -229,7 +271,7 @@ public class Main {
                 }
 
                 case "cd" -> {
-                    if(parts.length>1)
+                    if(parts.size()>1)
                     {
                         //Absolute path
                         ChangeDirectory(parts);
@@ -238,39 +280,9 @@ public class Main {
                 }
 
                 default -> {
-                    String path = getPath(command);
-
-                    List<String> fullCommand = new ArrayList<>();
-                    fullCommand.add(command);
-                    if (parts.length > 1) {
-                        fullCommand.addAll(parseInput(parts[1]));
-                    }
-                    if(path != null) {
-                        try {
-                            //It takes your array of strings (e.g., ["custom_exe_1234", "Alice"]) and tells Java,
-                            //"I want to run the program named in index 0 and pass the rest of the strings as arguments to it".
-                            ProcessBuilder pb = new ProcessBuilder(fullCommand);
-
-                            pb.directory(new File(currentPath));
-                            //Without this, the program (like custom_exe_1234) would run in the background,
-                            // but you wouldn't see its output on your screen.
-                            // By using inheritIO, when the program prints "Hello Alice",
-                            // that message appears in your shell.
-                            pb.inheritIO();
-
-                            //It tells the Operating System to actually
-                            //find the executable and begin running it as a separate process.
-                            pb.start().waitFor();
-
-                            //It forces your while(true) loop to stop and wait
-                            //until the external program finishes running.
-
-                        }
-                        catch (Exception e){
-                            System.exit(0);
-                        }
-                    }
-                    else System.out.println(command+": command not found");
+                    out.println(command);
+                    out.println(parts.get(1));
+                    ExecuteExternalCommand(command,parts);
                 }
             }
 

@@ -71,79 +71,66 @@ public class Main {
     }
 
     //@NotNull indicate that the variable can't be Null
-    private static String processQuotes( String Input)
-    {
+    private static String processQuotes(String Input) {
         StringBuilder result = new StringBuilder();
         boolean insideSingleQuote = false;
         boolean insideDoubleQuote = false;
-        boolean escapeNext = false;//should next chat be escaped ?
+        boolean escapeNext = false;
         boolean lastWasSpace = false;
 
         for (int i = 0; i < Input.length(); i++) {
             char c = Input.charAt(i);
 
             if (escapeNext) {
-                // Inside double quotes, only specific chars are escaped
+                // Logic for handling the character AFTER a backslash
                 if (insideDoubleQuote) {
-
                     if (c == '"' || c == '\\' || c == '$' || c == '`') {
-
-                        result.append(c); // Remove \ and add char
-
+                        result.append(c);
                     } else {
-
-                        result.append('\\').append(c); // Keep \ and add char
-
+                        result.append('\\').append(c);
                     }
-
                 } else {
-                    // Outside quotes, \ always escapes the next char
                     result.append(c);
-
                 }
-
                 escapeNext = false;
-
+                lastWasSpace = false; // Reset space tracking
+                continue; // Skip further checks for this literal character
             }
-            // Backslash detection
+
+            // 1. Backslash detection
             if (c == '\\' && !insideSingleQuote) {
-
                 escapeNext = true;
-
                 continue;
-
             }
+
+            // 2. Single Quote handling
             if (c == '\'' && !insideDoubleQuote) {
-
                 insideSingleQuote = !insideSingleQuote;
-
-                continue; // Don't add the quote itself
-
+                continue;
             }
+
+            // 3. Double Quote handling
             if (c == '"' && !insideSingleQuote) {
-
                 insideDoubleQuote = !insideDoubleQuote;
-
-                continue; // Don't add the quote itself
-
+                continue;
             }
+
+            // 4. Space handling
             if (c == ' ' && !insideSingleQuote && !insideDoubleQuote) {
-
                 if (!lastWasSpace && result.length() > 0) {
-
                     result.append(c);
-
                     lastWasSpace = true;
-
                 }
                 continue;
             }
 
             result.append(c);
-
             lastWasSpace = false;
-
         }
+
+        // Safety for trailing backslash
+        if (escapeNext) result.append('\\');
+
         return result.toString();
     }
 

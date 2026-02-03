@@ -280,8 +280,8 @@ public class Main {
                 }
 
                 default -> {
-                    out.println(command);
-                    out.println(parts.get(1));
+//                    out.println(command);
+//                    out.println(parts.get(1));
                     ExecuteExternalCommand(command,parts);
                 }
             }

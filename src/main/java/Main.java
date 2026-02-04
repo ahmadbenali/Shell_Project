@@ -6,9 +6,9 @@ import static java.lang.System.*;
 
 public class Main {
 
-    private static String currentPath=System.getProperty("user.dir");
-
-    private static final String home=System.getProperty("user.home");
+//    private static String currentPath=System.getProperty("user.dir");
+//
+//    private static final String home=System.getProperty("user.home");
 
     private static final Set<String> Shell_BuiltIn = Set.of("type","exit","echo","pwd","cd");
 
@@ -71,6 +71,7 @@ public class Main {
     }
 
     //@NotNull indicate that the variable can't be Null
+    //processQuotes for afterECHO
     private static String processQuotes(String Input) {
         StringBuilder result = new StringBuilder();
         boolean insideSingleQuote = false;
@@ -133,7 +134,7 @@ public class Main {
 
         return result.toString();
     }
-
+    //parseInput for command and after command
     private static List<String> parseInput(String input)
     {
         List<String> args = new ArrayList<>();
@@ -192,31 +193,31 @@ public class Main {
         }
     }
 
-    private static void ChangeDirectory(List<String>  parts) throws IOException
-    {
-        String targetPath = parts.get(1);
-        File newDir ;
-
-        if(targetPath.startsWith("/"))
-        {
-            newDir=new File(targetPath);
-            if(newDir.exists() && newDir.isDirectory())
-                // To convert java.io.file to java.lang.String
-                currentPath=newDir.getAbsolutePath();
-            else System.out.println("cd: " + parts.get(1) + ": No such file or directory");
-        }
-        else if(targetPath.equals("~"))
-        {
-            currentPath=getenv("HOME");
-        }
-        else{
-            newDir=new File(currentPath,targetPath);
-            if(newDir.exists() && newDir.isDirectory())
-                currentPath= newDir.getCanonicalPath();
-            else System.out.println("cd: " + parts.get(1) + ": No such file or directory");
-
-        }
-    }
+//    private static void ChangeDirectory(List<String>  parts) throws IOException
+//    {
+//        String targetPath = parts.get(1);
+//        File newDir ;
+//
+//        if(targetPath.startsWith("/"))
+//        {
+//            newDir=new File(targetPath);
+//            if(newDir.exists() && newDir.isDirectory())
+//                // To convert java.io.file to java.lang.String
+//                currentPath=newDir.getAbsolutePath();
+//            else System.out.println("cd: " + parts.get(1) + ": No such file or directory");
+//        }
+//        else if(targetPath.equals("~"))
+//        {
+//            currentPath=getenv("HOME");
+//        }
+//        else{
+//            newDir=new File(currentPath,targetPath);
+//            if(newDir.exists() && newDir.isDirectory())
+//                currentPath= newDir.getCanonicalPath();
+//            else System.out.println("cd: " + parts.get(1) + ": No such file or directory");
+//
+//        }
+//    }
 
     private static void ExecuteExternalCommand(String command,List<String>  parts)
     {
@@ -261,7 +262,7 @@ public class Main {
         while(true)
         {
             String input =InitializeInput();
-
+            ShellContext shell=new ShellContext();
             //List<String> parts=new ArrayList<>(List.of(input.split(" ", 2)));
 
             // will be 0 1 and 2
@@ -295,14 +296,17 @@ public class Main {
                     //It returns the Current Working Directory
                     //(the folder where the user was when they ran your Java program).
                     //System.getProperty("user.name") return the name of user currently logged in os
-                    System.out.println(currentPath);
+                    System.out.println(shell.getCurrentPath());
                 }
 
                 case "cd" -> {
                     if(parts.size()>1)
                     {
                         //Absolute path
-                        ChangeDirectory(parts);
+                        //ChangeDirectory(parts);
+
+                        shell.ChangeDirectory(parts);
+
                     }
 
                 }

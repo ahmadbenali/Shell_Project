@@ -76,7 +76,7 @@ public class ShellContext {
 
         boolean inSingle = false;//inside Single
         boolean inDouble = false;//inside double
-        boolean escaped = false;//space
+        boolean escaped = false;
 
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
@@ -93,7 +93,18 @@ public class ShellContext {
                     current.append(c); // Outside quotes, \ always escapes
                 }
                 escaped = false;
-            } else if (c == '\\' && !inSingle) {
+            }
+            else if(c =='>' && !inSingle && !inDouble)
+            {
+                // 1. If we were building a word (like "echo"), finish it first
+                if (current.length() > 0) {
+                    args.add(current.toString());
+                    current.setLength(0);
+                }
+                // 2. Add the ">" as its own separate argument
+                args.add(">");
+            }
+            else if (c == '\\' && !inSingle) {
                 escaped = true; // Trigger escape mode for next char
             } else if (c == '\'' && !inDouble) {
                 inSingle = !inSingle; // Toggle single quotes

@@ -6,7 +6,7 @@ public class EchoCommand extends BaseBuiltIn{
     @Override
     public void execute(List<String> args, ShellContext context) {
 
-        if(args.size()>1) HandleEcho(String.join(" ", args.subList(1, args.size())));
+        if(args.size()>1) HandleEcho(args);
         else out.println();
     }
 
@@ -24,12 +24,12 @@ public class EchoCommand extends BaseBuiltIn{
 
     }
 
-    private static void HandleEcho(String parts)
+    private static void HandleEcho(List<String> parts)
     {
-        //String output = String.join(" ",parseInput(parts));
-        String output=processQuotes(parts);
 
-        out.println(output);
+        List<String> echoArgs = parts.subList(1, parts.size());
+        System.out.println(String.join(" ", echoArgs));
+
     }
     //process quotes after ECHO
     private static String processQuotes(String Input) {

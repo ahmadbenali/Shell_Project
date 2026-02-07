@@ -23,7 +23,10 @@ public class EchoCommand extends BaseBuiltIn{
                     File file = new File(context.getCurrentPath(), data.WriteOnFile);
 
                     // Ensure parent directories exist (fixes /tmp/owl/ cases)
-                    if (file.getParentFile() != null) file.getParentFile().mkdirs();
+                    File parent = file.getParentFile();
+                    if (parent != null) {
+                        parent.mkdirs();
+                    }
 
                     // Use try-with-resources to ensure the file closes
                     try (PrintStream fileOut = new PrintStream(new FileOutputStream(file))) {

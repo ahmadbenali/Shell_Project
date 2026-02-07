@@ -15,6 +15,14 @@ public class ExternalCommand implements Command{
             if (data.isRedirect) {
                 // Ensure the file is created in the current directory
                 File outputFile = new File(context.getCurrentPath(), data.WriteOnFile);
+
+                // This is the missing piece!
+                // It creates any missing folders like '/tmp/rat/' automatically.
+                File parent = outputFile.getParentFile();
+                if (parent != null) {
+                    parent.mkdirs();
+                }
+
                 pb.redirectOutput(outputFile);
             } else {
                 pb.inheritIO();

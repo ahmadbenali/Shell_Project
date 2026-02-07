@@ -18,12 +18,10 @@ public class ExternalCommand implements Command{
 
                 // This is the missing piece!
                 // It creates any missing folders like '/tmp/rat/' automatically.
-                File parent = outputFile.getParentFile();
-                if (parent != null) {
-                    parent.mkdirs();
-                }
 
+                if (outputFile.getParentFile() != null) outputFile.getParentFile().mkdirs();
                 pb.redirectOutput(outputFile);
+
             } else {
                 pb.inheritIO();
             }

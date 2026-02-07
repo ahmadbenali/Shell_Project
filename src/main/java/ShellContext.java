@@ -90,7 +90,7 @@ public class ShellContext {
                     CurrentString.append(c); // Outside quotes, \ always escapes
                 }
                 escaped = false;
-            }else if (c == '>' && !inSingle && !inDouble) {
+            }else if (c == '>'&& !inSingle && !inDouble) {
                 // 1. If we were building a word (like "echo"), finish it first
                 if (!CurrentString.isEmpty()) {
                     FinalString.add(CurrentString.toString());

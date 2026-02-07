@@ -9,12 +9,12 @@ public class ExternalCommand implements Command{
         ShellUtils.CommandData data = ShellUtils.extractRedirection(args);
 
         try {
-            ProcessBuilder pb = new ProcessBuilder(data.args);
+            ProcessBuilder pb = new ProcessBuilder(data.CommandParts);
             pb.directory(new File(context.getCurrentPath()));
 
-            if (data.isRedirected) {
+            if (data.isRedirect) {
                 // Ensure the file is created in the current directory
-                File outputFile = new File(context.getCurrentPath(), data.redirectFile);
+                File outputFile = new File(context.getCurrentPath(), data.WriteOnFile);
                 pb.redirectOutput(outputFile);
             } else {
                 pb.inheritIO();

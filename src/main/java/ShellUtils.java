@@ -1,29 +1,32 @@
 import java.util.ArrayList;
 import java.util.List;
 
-// File: ShellUtils.java
 public class ShellUtils {
 
-    // The data container (Inner Class)
-    public static class CommandData {
-        public List<String> args;
-        public String redirectFile;
-        public boolean isRedirected;
+    public static class CommandData
+    {
+        public List<String> CommandParts;
+        public boolean isRedirect;
+        public String WriteOnFile;
     }
 
-    // The logic method
     public static CommandData extractRedirection(List<String> parts) {
         CommandData data = new CommandData();
-        int index = parts.indexOf(">");
+        data.CommandParts = parts;
+        data.WriteOnFile = null;
+        data.isRedirect = false;
 
-        if (index != -1 && index < parts.size() - 1) {
-            data.isRedirected = true;
-            data.redirectFile = parts.get(index + 1);
-            data.args = new ArrayList<>(parts.subList(0, index));
-        } else {
-            data.isRedirected = false;
-            data.args = new ArrayList<>(parts); // Safely copy the list
+        int index = parts.indexOf(">");//index or -1
+
+        // If ">" is found and there is a filename after it
+        if (index != -1 ) {
+            data.isRedirect = true;
+            data.WriteOnFile = parts.get(index + 1);
+
+            // Get everything BEFORE the ">" as the command arguments
+            data.CommandParts = new ArrayList<>(parts.subList(0, index));
         }
+
         return data;
     }
 }

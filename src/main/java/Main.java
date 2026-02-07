@@ -28,7 +28,11 @@ public class Main {
         while(true) {
 
             String input =InitializeInput();
+
+            // return an obj that have a parts and bunch of flags, one of these for detect redirect
             List<String> parts = ShellContext.parseInput(input);
+
+
             String cmdName = parts.getFirst();
             Command cmd = BuiltIn.get(cmdName);
 
@@ -45,7 +49,7 @@ public class Main {
                     External.execute(parts,context);
                 }
                 else System.out.println(cmdName+": command not found");
-            }//l
+            }
 
         }
     }

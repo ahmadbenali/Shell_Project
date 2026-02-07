@@ -1,9 +1,9 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.System.getenv;
 
 //Encapsulation: Each shell object keeps track of its own location.
 //Flexibility: You can have two shells open in different folders at the same time without them crashing into each other.
@@ -39,9 +39,6 @@ public class ShellContext {
 
         }
     }
-    public void setCurrentPath(String currentPath) {
-        this.currentPath = currentPath;
-    }
 
     //Must be static because it's not an object instance, will not be diff from shell to shell
     public static String getPath(String inputPath)
@@ -71,8 +68,8 @@ public class ShellContext {
     //parseInput for command and after command
     public static List<String> parseInput(String input)
     {
-        List<String> args = new ArrayList<>();
-        StringBuilder current = new StringBuilder();
+        List<String> FinalString = new ArrayList<>();
+        StringBuilder CurrentString = new StringBuilder();
 
         boolean inSingle = false;//inside Single
         boolean inDouble = false;//inside double
@@ -85,26 +82,24 @@ public class ShellContext {
                 // Check double quote rules: \ only escapes " \ $ ` and newline
                 if (inDouble) {
                     if (c == '"' || c == '\\' || c == '$' || c == '`') {
-                        current.append(c);
+                        CurrentString.append(c);
                     } else {
-                        current.append('\\').append(c); // Keep literal backslash
+                        CurrentString.append('\\').append(c); // Keep literal backslash
                     }
                 } else {
-                    current.append(c); // Outside quotes, \ always escapes
+                    CurrentString.append(c); // Outside quotes, \ always escapes
                 }
                 escaped = false;
-            }
-            else if(c =='>' && !inSingle && !inDouble)
-            {
+            }else if (c == '>' && !inSingle && !inDouble) {
                 // 1. If we were building a word (like "echo"), finish it first
-                if (current.length() > 0) {
-                    args.add(current.toString());
-                    current.setLength(0);
+                if (!CurrentString.isEmpty()) {
+                    FinalString.add(CurrentString.toString());
+                    CurrentString.setLength(0);
                 }
                 // 2. Add the ">" as its own separate argument
-                args.add(">");
-            }
-            else if (c == '\\' && !inSingle) {
+                FinalString.add(">");
+                // return flag redirect onn
+            } else if (c == '\\' && !inSingle) {
                 escaped = true; // Trigger escape mode for next char
             } else if (c == '\'' && !inDouble) {
                 inSingle = !inSingle; // Toggle single quotes
@@ -112,25 +107,24 @@ public class ShellContext {
                 inDouble = !inDouble; // Toggle double quotes
             } else if (c == ' ' && !inSingle && !inDouble) {
                 // Split into new argument on unquoted space
-                if (current.length() > 0) {
-                    args.add(current.toString());
-                    current.setLength(0);
+                if (!CurrentString.isEmpty()) {
+                    FinalString.add(CurrentString.toString());
+                    CurrentString.setLength(0);
                 }
             } else {
-                current.append(c);
+                CurrentString.append(c);
             }
         }
-        if (escaped) current.append('\\'); // Handle trailing backslash
-        if (current.length() > 0) args.add(current.toString());
+        if (escaped) CurrentString.append('\\'); // Handle trailing backslash
+        if (!CurrentString.isEmpty()) FinalString.add(CurrentString.toString());
 
-        return args;
+        return FinalString;
+        //return args,flag
     }
 
     public String getCurrentPath() {
         return this.currentPath;
     }
 
-    public static String getHome() {
-        return home;
-    }
+
 }

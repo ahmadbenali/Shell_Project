@@ -99,7 +99,8 @@ public class ShellContext {
                 // 2. Add the ">" as its own separate argument
                 FinalString.add(">");
                 // return flag redirect onn
-            } else if (c == '\\' && !inSingle) {
+            }
+            else if (c == '\\' && !inSingle) {
                 escaped = true; // Trigger escape mode for next char
             } else if (c == '\'' && !inDouble) {
                 inSingle = !inSingle; // Toggle single quotes

@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class ExternalCommand implements Command{
@@ -9,8 +10,8 @@ public class ExternalCommand implements Command{
         ShellUtils.CommandData data = ShellUtils.extractRedirection(args);
 
         try {
-            ProcessBuilder pb = new ProcessBuilder(data.CommandParts);
-            pb.directory(new File(context.getCurrentPath()));
+            ProcessBuilder processBuilder= new ProcessBuilder(data.CommandParts);
+            processBuilder.directory(new File(context.getCurrentPath()));
 
             if (data.isRedirect) {
                 // Ensure the file is created in the current directory
@@ -19,13 +20,20 @@ public class ExternalCommand implements Command{
                 // This is the missing piece!
                 // It creates any missing folders like '/tmp/rat/' automatically.
                 if (outputFile.getParentFile() != null) outputFile.getParentFile().mkdirs();
-                pb.redirectOutput(outputFile);
+                try{
+                    outputFile.createNewFile();
+                }catch (IOException e)
+                {
+                    System.out.println("Error creating new file: " + e);
+                    return;
+                }
+                processBuilder.redirectOutput(outputFile);
 
             } else {
-                pb.inheritIO();
+                processBuilder.inheritIO();
             }
 
-            Process process = pb.start();
+            Process process = processBuilder.start();
             process.waitFor();
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());

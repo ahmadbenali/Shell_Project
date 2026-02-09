@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.util.List;
 import static java.lang.System.*;
 
-public class ExternalCommand implements Command{
+public class ExternalCommand implements Command {
 
     @Override
     public void execute(List<String> args, ShellContext context) {
@@ -11,32 +11,60 @@ public class ExternalCommand implements Command{
         ShellUtils.CommandData data = ShellUtils.extractRedirection(args);
 
         try {
-            ProcessBuilder processBuilder= new ProcessBuilder(data.CommandParts);
+            ProcessBuilder processBuilder = new ProcessBuilder(data.CommandParts);
             processBuilder.directory(new File(context.getCurrentPath()));
 
             if (data.isRedirect) {
-                // Ensure the file is created in the current directory
-                File outputFile = new File(context.getCurrentPath(), data.WriteOnFile);
+                // Handle the output file path
+                File outputFile = resolveOutputFile(data.WriteOnFile, context.getCurrentPath());
 
-                // This is the missing piece!
-                // It creates any missing folders like '/tmp/rat/' automatically.
+                // Create parent directories if needed
                 File parent = outputFile.getParentFile();
-                if(parent != null && !parent.exists())
+                if (parent != null && !parent.exists()) {
                     if (!parent.mkdirs()) {
                         err.println("Error: Could not create directory " + parent.getPath());
                         return;
                     }
-                processBuilder.redirectOutput(outputFile);
+                }
+
+                // Redirect stdout to file
+                processBuilder.redirectOutput(ProcessBuilder.Redirect.to(outputFile));
+
+                // Still show errors on stderr (optional: redirect errors too)
+                processBuilder.redirectErrorStream(false); // Keep stderr separate
 
             } else {
                 processBuilder.inheritIO();
             }
 
-            processBuilder.start().waitFor();
-//            Process process = processBuilder.start();
-//            process.waitFor();
-        } catch (Exception e) {
-            err.println("Error: " + e.getMessage());
+            Process process = processBuilder.start();
+            int exitCode = process.waitFor();
+
+            // Optional: handle non-zero exit codes
+            if (exitCode != 0 && !data.isRedirect) {
+                // Error already shown via inheritIO
+            }
+
+        } catch (IOException e) {
+            err.println("Error executing command: " + e.getMessage());
+        } catch (InterruptedException e) {
+            err.println("Command interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt(); // Restore interrupt status
         }
+    }
+
+    /**
+     * Resolves the output file path relative to the current directory
+     */
+    private File resolveOutputFile(String filePath, String currentPath) {
+        File file = new File(filePath);
+
+        // If absolute path, use as-is
+        if (file.isAbsolute()) {
+            return file;
+        }
+
+        // If relative path, resolve against current directory
+        return new File(currentPath, filePath);
     }
 }

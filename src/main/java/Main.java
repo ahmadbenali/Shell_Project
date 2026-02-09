@@ -19,7 +19,7 @@ public class Main {
 
         ShellContext context =new ShellContext();
 
-        //In future make a record instted of this
+        //In future make a record instead of this
         BuiltIn.put("echo",new EchoCommand());
         BuiltIn.put("cd",new CdCommand());
         BuiltIn.put("pwd",new PwdCommand());

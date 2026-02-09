@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import static java.lang.System.*;
 
 public class ExternalCommand implements Command{
 
@@ -19,14 +20,11 @@ public class ExternalCommand implements Command{
 
                 // This is the missing piece!
                 // It creates any missing folders like '/tmp/rat/' automatically.
-                if (outputFile.getParentFile() != null) outputFile.getParentFile().mkdirs();
-                try{
-                    outputFile.createNewFile();
-                }catch (IOException e)
-                {
-                    System.out.println("Error creating new file: " + e);
-                    return;
-                }
+                File parent = outputFile.getParentFile();
+                if(parent != null && !parent.exists())
+                    if (!parent.mkdirs())
+                        err.println("Error: Could not create directory " + parent.getPath());
+
                 processBuilder.redirectOutput(outputFile);
 
             } else {
@@ -36,7 +34,7 @@ public class ExternalCommand implements Command{
             Process process = processBuilder.start();
             process.waitFor();
         } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
+            err.println("Error: " + e.getMessage());
         }
     }
 }

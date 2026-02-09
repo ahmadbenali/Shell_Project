@@ -1,12 +1,13 @@
 import java.util.*;
+import static java.lang.System.*;
 
 
 public class Main {
 
     private static String InitializeInput()
     {
-        System.out.print("$ ");
-        Scanner scanner=new Scanner(System.in);
+        out.print("$ ");
+        Scanner scanner=new Scanner(in);//System.in
         return scanner.nextLine();
 
     }

@@ -34,7 +34,7 @@ public class EchoCommand extends BaseBuiltIn{
                         fileOut.println(String.join("",data.CommandParts.subList(1,data.CommandParts.size())));
                     }
                 } catch (IOException e) {
-                    System.err.println("echo: redirection failed: " + e.getMessage());
+                    err.println("echo: redirection failed: " + e.getMessage());
                 }
             }
             else {

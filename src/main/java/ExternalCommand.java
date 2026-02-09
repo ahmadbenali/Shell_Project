@@ -22,9 +22,10 @@ public class ExternalCommand implements Command{
                 // It creates any missing folders like '/tmp/rat/' automatically.
                 File parent = outputFile.getParentFile();
                 if(parent != null && !parent.exists())
-                    if (!parent.mkdirs())
+                    if (!parent.mkdirs()) {
                         err.println("Error: Could not create directory " + parent.getPath());
-
+                        return;
+                    }
                 processBuilder.redirectOutput(outputFile);
 
             } else {

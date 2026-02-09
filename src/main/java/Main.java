@@ -33,7 +33,6 @@ public class Main {
             // return an obj that have a parts and bunch of flags, one of these for detect redirect
             List<String> parts = ShellContext.parseInput(input);
 
-
             String cmdName = parts.getFirst();
             Command cmd = BuiltIn.get(cmdName);
 

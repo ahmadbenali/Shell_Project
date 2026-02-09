@@ -11,38 +11,40 @@ public class EchoCommand extends BaseBuiltIn{
     public void execute(List<String> args, ShellContext context) {
 
 
-        ShellUtils.CommandData data=ShellUtils.extractRedirection(args);
+        ShellUtils.CommandData data = ShellUtils.extractRedirection(args);
 
         boolean isRedirect = data.isRedirect;
-        List<String> commandPart=data.CommandParts;
-        String WriteOnFile= data.WriteOnFile;
+        List<String> commandPart = data.CommandParts;
+        String writeOnFile = data.WriteOnFile;
 
-        if(args.size()>1) {
+        if (args.size() > 1) {
             if (isRedirect) {
                 try {
-                    File file = new File(context.getCurrentPath(), data.WriteOnFile);
+                    File file = new File(context.getCurrentPath(), writeOnFile);
 
-                    // Ensure parent directories exist (fixes /tmp/owl/ cases)
+                    // --- Robust Directory Creation ---
                     File parent = file.getParentFile();
-                    if (parent != null) {
-                        parent.mkdirs();
+                    if (parent != null && !parent.exists()) {
+                        // Check the return value to satisfy the IDE and handle errors
+                        if (!parent.mkdirs()) {
+                            System.err.println("echo: " + parent.getPath() + ": Permission denied or directory creation failed");
+                            return; // Stop execution if we can't create the path
+                        }
                     }
 
                     // Use try-with-resources to ensure the file closes
                     try (PrintStream fileOut = new PrintStream(new FileOutputStream(file))) {
-
-                        fileOut.println(String.join("",data.CommandParts.subList(1,data.CommandParts.size())));
+                        // Join the parts and write to the file
+                        fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
                     }
                 } catch (IOException e) {
-                    err.println("echo: redirection failed: " + e.getMessage());
+                    System.err.println("echo: redirection failed: " + e.getMessage());
                 }
-            }
-            else {
-                out.println(HandleEcho(args));
+            } else {
+                // Standard behavior (writing to console)
+                System.out.println(HandleEcho(args));
             }
         }
-
-
     }
 
     private static void HandleBasicEcho(String AfterEcho)

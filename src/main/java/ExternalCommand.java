@@ -32,8 +32,9 @@ public class ExternalCommand implements Command{
                 processBuilder.inheritIO();
             }
 
-            Process process = processBuilder.start();
-            process.waitFor();
+            processBuilder.start().waitFor();
+//            Process process = processBuilder.start();
+//            process.waitFor();
         } catch (Exception e) {
             err.println("Error: " + e.getMessage());
         }

@@ -90,15 +90,47 @@ public class ShellContext {
                     CurrentString.append(c); // Outside quotes, \ always escapes
                 }
                 escaped = false;
-            }else if (c == '>'&& !inSingle && !inDouble) {
-                // 1. If we were building a word (like "echo"), finish it first
-                if (!CurrentString.isEmpty()) {
-                    FinalString.add(CurrentString.toString());
+            }else if (c == '>' && !inSingle && !inDouble) {
+                // Check if previous character was '1' or '2' (file descriptor)
+                String lastToken = null;
+                if (!FinalString.isEmpty()) {
+                    lastToken = FinalString.get(FinalString.size() - 1);
+                }
+
+                // Check if we have a pending digit in CurrentString (like building "1")
+                String currentContent = CurrentString.toString();
+
+                // Case 1: "1>" or "2>" as separate tokens (e.g., "echo hello 1 > file")
+                if (lastToken != null && (lastToken.equals("1") || lastToken.equals("2"))) {
+                    // Remove the last token and combine it with >
+                    FinalString.remove(FinalString.size() - 1);
+                    FinalString.add(lastToken + ">");
+                }
+                // Case 2: "1>" or "2>" being built in current string (e.g., "echo hello1>file")
+                else if (currentContent.endsWith("1") || currentContent.endsWith("2")) {
+                    // Extract everything except the last digit
+                    String beforeDigit = currentContent.substring(0, currentContent.length() - 1);
+                    String digit = currentContent.substring(currentContent.length() - 1);
+
+                    // Add the part before digit if exists
+                    if (!beforeDigit.isEmpty()) {
+                        FinalString.add(beforeDigit);
+                    }
+
+                    // Add "1>" or "2>"
+                    FinalString.add(digit + ">");
                     CurrentString.setLength(0);
                 }
-                // 2. Add the ">" as its own separate argument
-                FinalString.add(">");
-                // return flag redirect onn
+                // Case 3: Regular ">" redirection
+                else {
+                    // Finish any pending word first
+                    if (!CurrentString.isEmpty()) {
+                        FinalString.add(CurrentString.toString());
+                        CurrentString.setLength(0);
+                    }
+                    // Add ">" or treat as "1>" (stdout is default)
+                    FinalString.add(">");
+                }
             }
             else if (c == '\\' && !inSingle) {
                 escaped = true; // Trigger escape mode for next char

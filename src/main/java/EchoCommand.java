@@ -20,10 +20,10 @@ public class EchoCommand extends BaseBuiltIn{
         if (args.size() > 1) {
             if (isRedirect) {
                 try {
-                    File file = new File(context.getCurrentPath(), writeOnFile);
+                    File outputFile = resolveOutputFile(data.WriteOnFile, context.getCurrentPath());
 
                     // --- Robust Directory Creation ---
-                    File parent = file.getParentFile();
+                    File parent = outputFile.getParentFile();
                     if (parent != null && !parent.exists()) {
                         // Check the return value to satisfy the IDE and handle errors
                         if (!parent.mkdirs()) {
@@ -33,7 +33,7 @@ public class EchoCommand extends BaseBuiltIn{
                     }
 
                     // Use try-with-resources to ensure the file closes
-                    try (PrintStream fileOut = new PrintStream(new FileOutputStream(file))) {
+                    try (PrintStream fileOut = new PrintStream(new FileOutputStream(outputFile))) {
                         // Join the parts and write to the file
                         fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
                     }
@@ -69,6 +69,18 @@ public class EchoCommand extends BaseBuiltIn{
         return String.join(" ",echoArgs);
         // return the output
 
+    }
+
+    private File resolveOutputFile(String filePath, String currentPath) {
+        File file = new File(filePath);
+
+        // If absolute path, use as-is
+        if (file.isAbsolute()) {
+            return file;
+        }
+
+        // If relative path, resolve against current directory
+        return new File(currentPath, filePath);
     }
     //process quotes after ECHO
     private static String processQuotes(String Input) {

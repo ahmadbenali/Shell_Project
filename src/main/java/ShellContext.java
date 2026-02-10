@@ -29,7 +29,7 @@ public class ShellContext {
         }
         else if(targetPath.equals("~"))
         {
-            currentPath=home;
+            currentPath=System.getProperty("user.home");
         }
         else{
             newDir=new File(currentPath,targetPath);

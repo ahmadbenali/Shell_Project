@@ -19,6 +19,7 @@ public class Main {
 
         ShellContext context =new ShellContext();
 
+
         //In future make a record instead of this
         BuiltIn.put("echo",new EchoCommand());
         BuiltIn.put("cd",new CdCommand());
@@ -31,14 +32,14 @@ public class Main {
             String input =InitializeInput();
 
             // return an obj that have a parts and bunch of flags, one of these for detect redirect
-            List<String> parts = ShellContext.parseInput(input);
+            List<String> CommandLine = CommandParser.parse(input);
 
-            String cmdName = parts.getFirst();
+            String cmdName = CommandLine.getFirst();
             Command cmd = BuiltIn.get(cmdName);
 
 
             if (cmd != null) {
-                cmd.execute(parts, context);
+                cmd.execute(CommandLine, context);
             }
             else
             {
@@ -46,7 +47,7 @@ public class Main {
                 if(path != null)
                 {
                     Command External =new ExternalCommand();
-                    External.execute(parts,context);
+                    External.execute(CommandLine,context);
                 }
                 else System.out.println(cmdName+": command not found");
             }

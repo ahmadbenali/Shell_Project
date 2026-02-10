@@ -3,27 +3,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import static java.lang.System.*;
 import java.io.PrintStream;
 
 public class EchoCommand extends BaseBuiltIn{
     @Override
-    public void execute(List<String> args, ShellContext context) {
+    public void execute(List<String> CommandLine, ShellContext context) {
 
 
-        ShellUtils.CommandData data = ShellUtils.extractRedirection(args);
+        ShellUtils.CommandData data = ShellUtils.extractRedirection(CommandLine);
 
         boolean isRedirect = data.isRedirect;
-        List<String> commandPart = data.CommandParts;
+        List<String> commandPart = data.ClearCommand;
         String writeOnFile = data.WriteOnFile;
 
-        if (args.size() > 1) {
+        if (CommandLine.size() > 1) {
             if (isRedirect) {
                 try {
-                    File outputFile = resolveOutputFile(data.WriteOnFile, context.getCurrentPath());
+                    File Stdout = resolveOutputFile(data.WriteOnFile, context.getCurrentPath());
 
                     // --- Robust Directory Creation ---
-                    File parent = outputFile.getParentFile();
+                    File parent = Stdout.getParentFile();
                     if (parent != null && !parent.exists()) {
                         // Check the return value to satisfy the IDE and handle errors
                         if (!parent.mkdirs()) {
@@ -33,7 +32,7 @@ public class EchoCommand extends BaseBuiltIn{
                     }
 
                     // Use try-with-resources to ensure the file closes
-                    try (PrintStream fileOut = new PrintStream(new FileOutputStream(outputFile))) {
+                    try (PrintStream fileOut = new PrintStream(new FileOutputStream(Stdout))) {
                         // Join the parts and write to the file
                         fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
                     }
@@ -42,7 +41,7 @@ public class EchoCommand extends BaseBuiltIn{
                 }
             } else {
                 // Standard behavior (writing to console)
-                System.out.println(HandleEcho(args));
+                System.out.println(HandleEcho(CommandLine));
             }
         }
     }
@@ -61,10 +60,10 @@ public class EchoCommand extends BaseBuiltIn{
 
     }
 
-    private static String HandleEcho(List<String> parts)
+    private static String HandleEcho(List<String> CommandLine)
     {
 
-        List<String> echoArgs = parts.subList(1, parts.size());
+        List<String> echoArgs = CommandLine.subList(1, CommandLine.size());
         //System.out.println(String.join(" ", echoArgs));
         return String.join(" ",echoArgs);
         // return the output

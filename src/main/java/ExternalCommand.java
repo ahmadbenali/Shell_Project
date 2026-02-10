@@ -6,20 +6,20 @@ import static java.lang.System.*;
 public class ExternalCommand implements Command {
 
     @Override
-    public void execute(List<String> args, ShellContext context) {
+    public void execute(List<String> CommandLine, ShellContext context) {
         // Separate the command from the redirection info
-        ShellUtils.CommandData data = ShellUtils.extractRedirection(args);
+        ShellUtils.CommandData data = ShellUtils.extractRedirection(CommandLine);
 
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder(data.CommandParts);
+            ProcessBuilder processBuilder = new ProcessBuilder(data.ClearCommand);
             processBuilder.directory(new File(context.getCurrentPath()));
 
             if (data.isRedirect) {
                 // Handle the output file path
-                File outputFile = resolveOutputFile(data.WriteOnFile, context.getCurrentPath());
+                File stdout = resolveOutputFile(data.WriteOnFile, context.getCurrentPath());
 
                 // Create parent directories if needed
-                File parent = outputFile.getParentFile();
+                File parent = stdout.getParentFile();
                 if (parent != null && !parent.exists()) {
                     if (!parent.mkdirs()) {
                         err.println("Error: Could not create directory " + parent.getPath());
@@ -28,7 +28,7 @@ public class ExternalCommand implements Command {
                 }
 
                 // Redirect stdout to file
-                processBuilder.redirectOutput(ProcessBuilder.Redirect.to(outputFile));
+                processBuilder.redirectOutput(ProcessBuilder.Redirect.to(stdout));
 
                 // Still show errors on stderr (optional: redirect errors too)
                 processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT); // Keep stderr separate

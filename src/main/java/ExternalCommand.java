@@ -31,7 +31,7 @@ public class ExternalCommand implements Command {
                 processBuilder.redirectOutput(ProcessBuilder.Redirect.to(outputFile));
 
                 // Still show errors on stderr (optional: redirect errors too)
-                processBuilder.redirectErrorStream(false); // Keep stderr separate
+                processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT); // Keep stderr separate
 
             } else {
                 processBuilder.inheritIO();

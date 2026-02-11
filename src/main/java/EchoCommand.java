@@ -15,6 +15,7 @@ public class EchoCommand extends BaseBuiltIn{
         boolean isStderr = data.isStderr;
 
         if (CommandLine.size() > 1) {
+            //write the output command on file
             if (isStdout)
             {
                 ExecuteOnFile(data,context.getCurrentPath());
@@ -22,7 +23,7 @@ public class EchoCommand extends BaseBuiltIn{
             //Content of the command appear on console and any message will go to stderr
             else if(isStderr)
             {
-                System.out.println(HandleEcho(CommandLine));
+                System.out.println(HandleEcho(data.ClearCommand));
                 prepareEmptyErrorFile(data.WriteOnFile, context.getCurrentPath());
 
             }

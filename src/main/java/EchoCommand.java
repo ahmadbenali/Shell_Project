@@ -1,11 +1,7 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
-import java.io.PrintStream;
-
-public class EchoCommand extends BaseBuiltIn{
+public class EchoCommand extends BaseBuiltIn {
     @Override
     public void execute(List<String> CommandLine, ShellContext context) {
 
@@ -16,37 +12,32 @@ public class EchoCommand extends BaseBuiltIn{
 
         if (CommandLine.size() > 1) {
             //write the output command on file
-            if (isStdout)
-            {
-                ExecuteOnFile(data,context.getCurrentPath());
+            if (isStdout) {
+                ExecuteOnFile(data, context.getCurrentPath());
             }
             //Content of the command appear on console and any message will go to stderr
-            else if(isStderr)
-            {
+            else if (isStderr) {
                 System.out.println(HandleEcho(data.ClearCommand));
-                prepareEmptyErrorFile(data.WriteOnFile, context.getCurrentPath());
+                prepareEmptyErrorFile(data.WriteOnFile, context.getCurrentPath(), "echo");
 
-            }
-            else {
+            } else {
                 // Standard behavior (writing to console)
                 System.out.println(HandleEcho(CommandLine));
             }
         }
     }
 
-    private static String HandleEcho(List<String> CommandLine)
-    {
+    private static String HandleEcho(List<String> CommandLine) {
 
 
         List<String> echoArgs = CommandLine.subList(1, CommandLine.size());
         //System.out.println(String.join(" ", echoArgs));
-        return String.join(" ",echoArgs);
+        return String.join(" ", echoArgs);
         // return the output
 
     }
 
-    private static void ExecuteOnFile(ShellUtils.CommandData data,String currentPath)
-    {
+    private static void ExecuteOnFile(ShellUtils.CommandData data, String currentPath) {
         List<String> commandPart = data.ClearCommand;
         String writeOnFile = data.WriteOnFile;
 
@@ -64,8 +55,13 @@ public class EchoCommand extends BaseBuiltIn{
         }
     }
 
-    private void prepareEmptyErrorFile(String fileName, String currentPath) {
+    private void prepareEmptyErrorFile(String WriteOnFile, String currentPath, String errorMessage) {
         // 2> creates the file even if no error occurs
-        ShellUtils.prepareOutputFile(fileName, currentPath, "echo");
+        File StderrFile = ShellUtils.prepareOutputFile(WriteOnFile, currentPath, errorMessage);
+
+
+        try (FileOutputStream fos = new FileOutputStream(StderrFile)) {
+        } catch (IOException e) {
+        }
     }
 }

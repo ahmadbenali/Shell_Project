@@ -6,7 +6,8 @@ import static java.lang.System.*;
 public class ExternalCommand implements Command {
 
     @Override
-    public void execute(List<String> CommandLine, ShellContext context) {
+    public void execute(List<String> CommandLine, ShellContext context)
+    {
         // Separate the command from the redirection info
         ShellUtils.CommandData data = ShellUtils.extractRedirection(CommandLine);
 
@@ -37,7 +38,7 @@ public class ExternalCommand implements Command {
         }
     }
 
-    private static void Stderr(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
+    private void Stderr(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
     {
         File stderr = ShellUtils.prepareOutputFile(data.WriteOnFile,
                 context.getCurrentPath(), data.ClearCommand.getFirst());
@@ -48,7 +49,7 @@ public class ExternalCommand implements Command {
         processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT); // Keep stderr separate
     }
 
-    private static void Stdout(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
+    private void Stdout(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
     {
         // Handle the output file path
         File stdout = ShellUtils.prepareOutputFile(data.WriteOnFile,

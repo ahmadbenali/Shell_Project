@@ -19,8 +19,11 @@ public class EchoCommand extends BaseBuiltIn{
             {
                 ExecuteOnFile(data,context.getCurrentPath());
             }
+            //Content of the command appear on console and any message will go to stderr
             else if(isStderr)
             {
+                System.out.println(HandleEcho(CommandLine));
+                prepareEmptyErrorFile(data.WriteOnFile, context.getCurrentPath());
 
             }
             else {
@@ -32,6 +35,7 @@ public class EchoCommand extends BaseBuiltIn{
 
     private static String HandleEcho(List<String> CommandLine)
     {
+
 
         List<String> echoArgs = CommandLine.subList(1, CommandLine.size());
         //System.out.println(String.join(" ", echoArgs));
@@ -57,5 +61,10 @@ public class EchoCommand extends BaseBuiltIn{
         } catch (IOException e) {
             System.err.println("echo: redirection failed: " + e.getMessage());
         }
+    }
+
+    private void prepareEmptyErrorFile(String fileName, String currentPath) {
+        // 2> creates the file even if no error occurs
+        ShellUtils.prepareOutputFile(fileName, currentPath, "echo");
     }
 }

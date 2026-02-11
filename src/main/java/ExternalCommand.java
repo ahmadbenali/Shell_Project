@@ -14,36 +14,20 @@ public class ExternalCommand implements Command {
             ProcessBuilder processBuilder = new ProcessBuilder(data.ClearCommand);
             processBuilder.directory(new File(context.getCurrentPath()));
 
-            if (data.isRedirect) {
-                // Handle the output file path
-                File stdout = resolveOutputFile(data.WriteOnFile, context.getCurrentPath());
-
-                // Create parent directories if needed
-                File parent = stdout.getParentFile();
-                if (parent != null && !parent.exists()) {
-                    if (!parent.mkdirs()) {
-                        err.println("Error: Could not create directory " + parent.getPath());
-                        return;
-                    }
-                }
-
-                // Redirect stdout to file
-                processBuilder.redirectOutput(ProcessBuilder.Redirect.to(stdout));
-
-                // Still show errors on stderr (optional: redirect errors too)
-                processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT); // Keep stderr separate
-
-            } else {
+            if (data.isStdout)
+            {
+                Stdout(data, context, processBuilder);
+            }
+            else if(data.isStderr)
+            {
+                Stderr(data, context, processBuilder);
+            }
+            else {
                 processBuilder.inheritIO();
             }
 
             Process process = processBuilder.start();
-            int exitCode = process.waitFor();
-
-            // Optional: handle non-zero exit codes
-            if (exitCode != 0 && !data.isRedirect) {
-                // Error already shown via inheritIO
-            }
+            process.waitFor();
 
         } catch (IOException e) {
             err.println("Error executing command: " + e.getMessage());
@@ -53,18 +37,28 @@ public class ExternalCommand implements Command {
         }
     }
 
-    /**
-     * Resolves the output file path relative to the current directory
-     */
-    private File resolveOutputFile(String filePath, String currentPath) {
-        File file = new File(filePath);
+    private static void Stderr(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
+    {
+        File stderr = ShellUtils.prepareOutputFile(data.WriteOnFile,
+                context.getCurrentPath(), data.ClearCommand.getFirst());
 
-        // If absolute path, use as-is
-        if (file.isAbsolute()) {
-            return file;
-        }
-
-        // If relative path, resolve against current directory
-        return new File(currentPath, filePath);
+        assert stderr != null;
+        processBuilder.redirectError(stderr);
+        // Normal output (if any) should still go to the console
+        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT); // Keep stderr separate
     }
+
+    private static void Stdout(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
+    {
+        // Handle the output file path
+        File stdout = ShellUtils.prepareOutputFile(data.WriteOnFile,
+                context.getCurrentPath(), data.ClearCommand.getFirst());
+
+        // Redirect stdout to file
+        assert stdout != null;
+        processBuilder.redirectOutput(ProcessBuilder.Redirect.to(stdout));
+        // Normal output (if any) should still go to the console
+        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+    }
+
 }

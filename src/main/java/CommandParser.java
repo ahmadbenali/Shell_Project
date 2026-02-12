@@ -34,19 +34,14 @@ public class CommandParser {
                     char prefix = CurrentString.charAt(0);
                     // It's '1>', we clear the '1' so it doesn't stay in the arguments
                     CurrentString.setLength(0); // Clear the '1' or '2'
-
-                    if (prefix == '1') {
-                        FinalString.add(">"); // '1>' is treated the same as '>'
-                    } else {
-                        FinalString.add("2>"); // Explicitly add '2>' to the list
-                    }
+                    FinalString.add(prefix == '1' ? ">" : "2>");
                 } else if (!CurrentString.isEmpty()) {
                     // If it was a word like "echo", finish it
                     FinalString.add(CurrentString.toString());
                     CurrentString.setLength(0);
-                    // Add the ">" as the redirect marker
-                    FinalString.add(">");
                 }
+                // Add the ">" as the redirect marker
+                FinalString.add(">");
             }
             else if (c == '\\' && !inSingle) {
                 escaped = true; // Trigger escape mode for next char

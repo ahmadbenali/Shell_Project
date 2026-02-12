@@ -28,8 +28,6 @@ public class CommandParser {
                 escaped = false;
             }else if (c == '>' && !inSingle && !inDouble) {
 
-                // 1> Or > handle stdout and 2> stderr
-                // Check if the previous character was '1' to support '1>'
                 if (CurrentString.length() == 1 && (CurrentString.charAt(0) == '1' || CurrentString.charAt(0) == '2' )) {
                     char prefix = CurrentString.charAt(0);
                     // It's '1>', we clear the '1' so it doesn't stay in the arguments
@@ -40,14 +38,16 @@ public class CommandParser {
                         FinalString.add("2>"); // Explicitly add '2>' to the list
                     }
                 }
-                else
+                else {
                     if (!CurrentString.isEmpty()) {
-                    // If it was a word like "echo", finish it
-                    FinalString.add(CurrentString.toString());
-                    CurrentString.setLength(0);
+                        // If it was a word like "echo", finish it
+                        FinalString.add(CurrentString.toString());
+                        CurrentString.setLength(0);
+                    }
+                    FinalString.add(">");
                 }
-                // Add the ">" as the redirect marker
-                FinalString.add(">");
+
+
             }
             else if (c == '\\' && !inSingle) {
                 escaped = true; // Trigger escape mode for next char
@@ -69,6 +69,6 @@ public class CommandParser {
         if (!CurrentString.isEmpty()) FinalString.add(CurrentString.toString());
 
         return FinalString;
-        //return args,flag
+
     }
 }

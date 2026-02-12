@@ -39,14 +39,15 @@ public class CommandParser {
                     } else {
                         FinalString.add("2>"); // Explicitly add '2>' to the list
                     }
-                } else if (!CurrentString.isEmpty()) {
+                }
+                else
+                    if (!CurrentString.isEmpty()) {
                     // If it was a word like "echo", finish it
                     FinalString.add(CurrentString.toString());
                     CurrentString.setLength(0);
-                    FinalString.add(">");
                 }
                 // Add the ">" as the redirect marker
-                //FinalString.add(">");
+                FinalString.add(">");
             }
             else if (c == '\\' && !inSingle) {
                 escaped = true; // Trigger escape mode for next char

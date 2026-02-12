@@ -17,16 +17,7 @@ public class ExternalCommand implements Command {
 
             if (data.isStdout)
             {
-                //Stdout(data, context, processBuilder);
-                File stdout = ShellUtils.prepareOutputFile(data.WriteOnFile,
-                        context.getCurrentPath(), data.ClearCommand.getFirst());
-
-                // Redirect stdout to file
-
-                assert stdout != null;
-                processBuilder.redirectOutput(ProcessBuilder.Redirect.to(stdout));
-                // Normal output (if any) should still go to the console
-                processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+                Stdout(data, context, processBuilder);
             }
             else if(data.isStderr)
             {
@@ -71,7 +62,5 @@ public class ExternalCommand implements Command {
         // Normal output (if any) should still go to the console
         processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
 
-
     }
-
 }

@@ -46,8 +46,6 @@ public class CommandParser {
                     }
                     FinalString.add(">");
                 }
-
-
             }
             else if (c == '\\' && !inSingle) {
                 escaped = true; // Trigger escape mode for next char
@@ -65,6 +63,8 @@ public class CommandParser {
                 CurrentString.append(c);
             }
         }
+
+        //Out of the loop
         if (escaped) CurrentString.append('\\'); // Handle trailing backslash
         if (!CurrentString.isEmpty()) FinalString.add(CurrentString.toString());
 

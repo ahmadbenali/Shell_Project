@@ -9,6 +9,7 @@ public class ShellUtils {
         public List<String> ClearCommand;
         public boolean isStdout;
         public boolean isStderr;
+        public boolean isAppend;
         public String WriteOnFile;
     }
 
@@ -18,9 +19,11 @@ public class ShellUtils {
         data.WriteOnFile = null;
         data.isStdout = false;
         data.isStderr = false;
+        data.isAppend = false;
 
         int stdoutIndex = CommandLine.indexOf(">");//index or -1
         int stderrIndex = CommandLine.indexOf("2>");
+
 
         // If ">" is found and there is a filename after it
         if (stdoutIndex != -1 ) {
@@ -35,7 +38,6 @@ public class ShellUtils {
             data.WriteOnFile = CommandLine.get(stderrIndex + 1);
             data.ClearCommand = new ArrayList<>(CommandLine.subList(0, stderrIndex));
         }
-
         return data;
     }
 

@@ -71,6 +71,7 @@
                             <mainClass>Main</mainClass>
                         </manifest>
                     </archive>
+                    <outputDirectory>${project.basedir}</outputDirectory>
                 </configuration>
 
                 <executions>

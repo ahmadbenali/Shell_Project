@@ -1,7 +1,7 @@
 import java.util.*;
 import static java.lang.System.*;
 
-
+//Just for test
 public class Main {
 
     private static String InitializeInput()

@@ -12,6 +12,8 @@ public class CommandParserTest {
         // This just checks if the test can "see" your main code
         List<String> result = CommandParser.parse("echo hello");
         assertNotNull(result);
+
+        //The result to pass the test OR not
         assertEquals("echo", result.getFirst());
     }
 }

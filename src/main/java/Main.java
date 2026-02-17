@@ -11,7 +11,6 @@ public class Main {
         return scanner.nextLine();
 
     }
-
     public static Map<String,Command> BuiltIn =new HashMap<>();
 
     public static void main(String[] args) throws Exception {

@@ -79,7 +79,7 @@ public class EchoCommand extends BaseBuiltIn {
             }
         }
 
-    }
+    }//as
 
     private void prepareEmptyErrorFile(String WriteOnFile, String currentPath, String errorMessage) {
         // 2> creates the file even if no error occurs

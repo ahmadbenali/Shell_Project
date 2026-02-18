@@ -14,6 +14,7 @@ public class ShellUtils {
     }
 
     public static CommandData extractRedirection(List<String> CommandLine) {
+        //data is all info about the input command with flags
         CommandData data = new CommandData();
         data.ClearCommand = CommandLine;
         data.WriteOnFile = null;
@@ -23,6 +24,7 @@ public class ShellUtils {
 
         int stdoutIndex = CommandLine.indexOf(">");//index or -1
         int stderrIndex = CommandLine.indexOf("2>");
+        int appendIndex = CommandLine.indexOf(">>");
 
 
         // If ">" is found and there is a filename after it
@@ -37,6 +39,12 @@ public class ShellUtils {
             data.isStderr=true;
             data.WriteOnFile = CommandLine.get(stderrIndex + 1);
             data.ClearCommand = new ArrayList<>(CommandLine.subList(0, stderrIndex));
+        }
+        else if(appendIndex != -1)
+        {
+            data.isAppend=true;
+            data.WriteOnFile = CommandLine.get(appendIndex + 1);
+            data.ClearCommand = new ArrayList<>(CommandLine.subList(0, appendIndex));
         }
         return data;
     }
@@ -60,4 +68,6 @@ public class ShellUtils {
         }
         return file;
     }
+
+
 }

@@ -5,6 +5,8 @@ import static java.lang.System.*;
 //Common things between commands BuiltIN
 public abstract class BaseBuiltIn implements Command{
 
+    public record BuiltIn(String cmd, Command command){}
+
     protected void reportError(String cmd , String message)
     {
         err.println(cmd + " : " + message );

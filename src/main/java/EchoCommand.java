@@ -70,9 +70,9 @@ public class EchoCommand extends BaseBuiltIn {
                         currentPath, "echo");
 
                 // Use try-with-resources to ensure the file closes
-                try (PrintStream fileOut = new PrintStream(new FileOutputStream(Append))) {
+                try (PrintStream fileOut = new PrintStream(new FileOutputStream(Append, data.isAppend))) {
                     // Join the parts and write to the file
-                    fileOut.append(String.join(" ", commandPart.subList(1, commandPart.size())));
+                    fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
                 }
             } catch (IOException e) {
                 System.err.println("echo: redirection failed: " + e.getMessage());

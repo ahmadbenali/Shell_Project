@@ -13,11 +13,7 @@ public class EchoCommand extends BaseBuiltIn {
 
         if (CommandLine.size() > 1) {
             //write the output command on file
-            if (isStdout) {
-                ExecuteOnFile(data, context.getCurrentPath());
-            }
-            else if(isAppend)
-            {
+            if (isStdout || isAppend) {
                 ExecuteOnFile(data, context.getCurrentPath());
             }
             //Content of the command appear on console and any message will go to stderr
@@ -44,9 +40,9 @@ public class EchoCommand extends BaseBuiltIn {
     }
 
     private static void ExecuteOnFile(ShellUtils.CommandData data, String currentPath) {
+
         List<String> commandPart = data.ClearCommand;
         String writeOnFile = data.WriteOnFile;
-
 
         if(data.isStdout)
         {
@@ -55,7 +51,10 @@ public class EchoCommand extends BaseBuiltIn {
                         currentPath, "echo");
 
                 // Use try-with-resources to ensure the file closes
-                try (PrintStream fileOut = new PrintStream(new FileOutputStream(Stdout))) {
+                //new FileOutputStream Java immediately deletes all existing content.
+                //The file size becomes 0 bytes before you write a single character.
+                //when add data.isAppend if true -> append, if false overwrite
+                try (PrintStream fileOut = new PrintStream(new FileOutputStream(Stdout, data.isAppend))) {
                     // Join the parts and write to the file
                     fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
                 }
@@ -63,23 +62,7 @@ public class EchoCommand extends BaseBuiltIn {
                 System.err.println("echo: redirection failed: " + e.getMessage());
             }
         }
-        else
-        {
-            try {
-                File Append = ShellUtils.prepareOutputFile(writeOnFile,
-                        currentPath, "echo");
-
-                // Use try-with-resources to ensure the file closes
-                try (PrintStream fileOut = new PrintStream(new FileOutputStream(Append, data.isAppend))) {
-                    // Join the parts and write to the file
-                    fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
-                }
-            } catch (IOException e) {
-                System.err.println("echo: redirection failed: " + e.getMessage());
-            }
-        }
-
-    }//as
+    }
 
     private void prepareEmptyErrorFile(String WriteOnFile, String currentPath, String errorMessage) {
         // 2> creates the file even if no error occurs

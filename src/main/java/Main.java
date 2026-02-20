@@ -18,7 +18,7 @@ public class Main {
         ShellContext context =new ShellContext();
 
 
-        //In future make a record instead of this
+
         BuiltIn.put("echo",new EchoCommand());
         BuiltIn.put("cd",new CdCommand());
         BuiltIn.put("pwd",new PwdCommand());
@@ -35,7 +35,7 @@ public class Main {
             String cmdName = CommandLine.getFirst();
             Command cmd = BuiltIn.get(cmdName);
 
-            //ah
+
             if (cmd != null) {
                 cmd.execute(CommandLine, context);
             }

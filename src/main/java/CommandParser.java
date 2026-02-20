@@ -33,7 +33,7 @@ public class CommandParser {
                     op = ">>";
                     i++; // Skip the next '>' character in the loop
                 }
-
+        //lll
                 if (CurrentString.length() == 1 && (CurrentString.charAt(0) == '1' || CurrentString.charAt(0) == '2' )) {
                     char prefix = CurrentString.charAt(0);
                     // It's '1>', we clear the '1' so it doesn't stay in the arguments

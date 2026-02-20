@@ -9,10 +9,11 @@ public class EchoCommand extends BaseBuiltIn {
 
         boolean isStdout = data.isStdout;
         boolean isStderr = data.isStderr;
+        boolean isAppend = data.isAppend;
 
         if (CommandLine.size() > 1) {
             //write the output command on file
-            if (isStdout) {
+            if (isStdout || isAppend) {
                 ExecuteOnFile(data, context.getCurrentPath());
             }
             //Content of the command appear on console and any message will go to stderr
@@ -20,7 +21,8 @@ public class EchoCommand extends BaseBuiltIn {
                 System.out.println(HandleEcho(data.ClearCommand));
                 prepareEmptyErrorFile(data.WriteOnFile, context.getCurrentPath(), "echo");
 
-            } else {
+            }
+            else {
                 // Standard behavior (writing to console)
                 System.out.println(HandleEcho(CommandLine));
             }
@@ -38,20 +40,27 @@ public class EchoCommand extends BaseBuiltIn {
     }
 
     private static void ExecuteOnFile(ShellUtils.CommandData data, String currentPath) {
+
         List<String> commandPart = data.ClearCommand;
         String writeOnFile = data.WriteOnFile;
 
-        try {
-            File Stdout = ShellUtils.prepareOutputFile(writeOnFile,
-                    currentPath, "echo");
+        if(data.isStdout)
+        {
+            try {
+                File Stdout = ShellUtils.prepareOutputFile(writeOnFile,
+                        currentPath, "echo");
 
-            // Use try-with-resources to ensure the file closes
-            try (PrintStream fileOut = new PrintStream(new FileOutputStream(Stdout))) {
-                // Join the parts and write to the file
-                fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
+                // Use try-with-resources to ensure the file closes
+                //new FileOutputStream Java immediately deletes all existing content.
+                //The file size becomes 0 bytes before you write a single character.
+                //when add data.isAppend if true -> append, if false overwrite
+                try (PrintStream fileOut = new PrintStream(new FileOutputStream(Stdout, data.isAppend))) {
+                    // Join the parts and write to the file
+                    fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
+                }
+            } catch (IOException e) {
+                System.err.println("echo: redirection failed: " + e.getMessage());
             }
-        } catch (IOException e) {
-            System.err.println("echo: redirection failed: " + e.getMessage());
         }
     }
 

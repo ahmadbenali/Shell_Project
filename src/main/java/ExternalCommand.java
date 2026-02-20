@@ -23,6 +23,10 @@ public class ExternalCommand implements Command {
             {
                 Stderr(data, context, processBuilder);
             }
+            else if(data.isAppend)
+            {
+                Append(data, context, processBuilder);
+            }
             else {
                 processBuilder.inheritIO();
             }
@@ -62,5 +66,15 @@ public class ExternalCommand implements Command {
         // Normal output (if any) should still go to the console
         processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
 
+    }
+
+    private void Append(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
+    {
+        File append = ShellUtils.prepareOutputFile(data.WriteOnFile,
+                context.getCurrentPath(), data.ClearCommand.getFirst());
+
+        assert append != null;
+        processBuilder.redirectOutput(ProcessBuilder.Redirect.appendTo(append));
+        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
     }
 }

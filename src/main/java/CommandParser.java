@@ -28,14 +28,21 @@ public class CommandParser {
                 escaped = false;
             }else if (c == '>' && !inSingle && !inDouble) {
 
+                String op = ">";
+                if (i + 1 < Input.length() && Input.charAt(i + 1) == '>') {
+                    op = ">>";
+                    i++; // Skip the next '>' character in the loop
+                }
+
                 if (CurrentString.length() == 1 && (CurrentString.charAt(0) == '1' || CurrentString.charAt(0) == '2' )) {
                     char prefix = CurrentString.charAt(0);
                     // It's '1>', we clear the '1' so it doesn't stay in the arguments
                     CurrentString.setLength(0); // Clear the '1' or '2'
                     if (prefix == '1') {
-                        FinalString.add(">"); // '1>' is treated the same as '>'
-                    } else {
-                        FinalString.add("2>"); // Explicitly add '2>' to the list
+                        FinalString.add(op); // '1>' is treated the same as '>'
+                    }
+                    else {
+                        FinalString.add("2"+op); // Explicitly add '2>' to the list
                     }
                 }
                 else {
@@ -44,7 +51,7 @@ public class CommandParser {
                         FinalString.add(CurrentString.toString());
                         CurrentString.setLength(0);
                     }
-                    FinalString.add(">");
+                    FinalString.add(op);
                 }
             }
             else if (c == '\\' && !inSingle) {

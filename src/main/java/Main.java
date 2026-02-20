@@ -1,7 +1,6 @@
 import java.util.*;
 import static java.lang.System.*;
 
-//Just for test 3
 public class Main {
 
     private static String InitializeInput()
@@ -19,7 +18,7 @@ public class Main {
         ShellContext context =new ShellContext();
 
 
-        //In future make a record instead of this
+
         BuiltIn.put("echo",new EchoCommand());
         BuiltIn.put("cd",new CdCommand());
         BuiltIn.put("pwd",new PwdCommand());

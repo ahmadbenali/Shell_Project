@@ -72,8 +72,11 @@ public class CommandParser {
         }
 
         //Out of the loop
-        if (escaped) CurrentString.append('\\'); // Handle trailing backslash
-        if (!CurrentString.isEmpty()) FinalString.add(CurrentString.toString());
+        if (escaped)
+            CurrentString.append('\\'); // Handle trailing backslash
+
+        if (!CurrentString.isEmpty())
+            FinalString.add(CurrentString.toString());
 
         return FinalString;
 

@@ -12,6 +12,7 @@ public class ExternalCommand implements Command {
         ShellUtils.CommandData data = ShellUtils.extractRedirection(CommandLine);
 
         try {
+            //start new os process , for executing command
             ProcessBuilder processBuilder = new ProcessBuilder(data.ClearCommand);
             processBuilder.directory(new File(context.getCurrentPath()));
 
@@ -28,6 +29,8 @@ public class ExternalCommand implements Command {
                 Append(data, context, processBuilder);
             }
             else {
+                // if there is no redirection
+                //inherit IO, the child output goes to parent output
                 processBuilder.inheritIO();
             }
 

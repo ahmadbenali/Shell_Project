@@ -57,7 +57,7 @@ public class ShellUtils {
             data.isStderr = true;
 
             data.WriteOnFile = CommandLine.get(appendErr + 1);
-            data.ClearCommand = new ArrayList<>(CommandLine.subList(0, appendOut));
+            data.ClearCommand = new ArrayList<>(CommandLine.subList(0, appendErr));
         }
         return data;
     }

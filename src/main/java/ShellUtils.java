@@ -24,7 +24,10 @@ public class ShellUtils {
 
         int stdoutIndex = CommandLine.indexOf(">");//index or -1
         int stderrIndex = CommandLine.indexOf("2>");
-        int appendIndex = CommandLine.indexOf(">>");
+
+        int appendOut = CommandLine.indexOf(">>");//append output
+        int appendErr = CommandLine.indexOf("2>>");
+
 
 
         // If ">" is found and there is a filename after it
@@ -40,11 +43,21 @@ public class ShellUtils {
             data.WriteOnFile = CommandLine.get(stderrIndex + 1);
             data.ClearCommand = new ArrayList<>(CommandLine.subList(0, stderrIndex));
         }
-        else if(appendIndex != -1)
+        else if(appendOut != -1)
         {
             data.isAppend=true;
-            data.WriteOnFile = CommandLine.get(appendIndex + 1);
-            data.ClearCommand = new ArrayList<>(CommandLine.subList(0, appendIndex));
+            data.isStdout = true;
+
+            data.WriteOnFile = CommandLine.get(appendOut + 1);
+            data.ClearCommand = new ArrayList<>(CommandLine.subList(0, appendOut));
+        }
+        else if(appendErr != -1)
+        {
+            data.isAppend=true;
+            data.isStderr = true;
+
+            data.WriteOnFile = CommandLine.get(appendErr + 1);
+            data.ClearCommand = new ArrayList<>(CommandLine.subList(0, appendOut));
         }
         return data;
     }

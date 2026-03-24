@@ -15,7 +15,7 @@ public class ExternalCommand implements Command {
             ProcessBuilder processBuilder = new ProcessBuilder(data.ClearCommand);
             processBuilder.directory(new File(context.getCurrentPath()));
 
-            if (data.isStdout ||  data.isAppend)
+            if (data.isStdout)
             {
                 Stdout(data, context, processBuilder);
             }

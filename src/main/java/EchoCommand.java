@@ -9,17 +9,17 @@ public class EchoCommand extends BaseBuiltIn {
 
         boolean isStdout = data.isStdout;
         boolean isStderr = data.isStderr;
-        boolean isAppend = data.isAppend;
+        //boolean isAppend = data.isAppend;
 
         if (CommandLine.size() > 1) {
             //write the output command on file
             if (isStdout) {
                 ExecuteOnFile(data, context.getCurrentPath());
             }
-            else if(isAppend)
-            {
-                ExecuteOnFile(data, context.getCurrentPath());
-            }
+//            else if(isAppend)
+//            {
+//                ExecuteOnFile(data, context.getCurrentPath());
+//            }
             //Content of the command appear on console and any message will go to stderr
             else if (isStderr) {
                 System.out.println(HandleEcho(data.ClearCommand));
@@ -62,7 +62,7 @@ public class EchoCommand extends BaseBuiltIn {
             } catch (IOException e) {
                 System.err.println("echo: redirection failed: " + e.getMessage());
             }
-        }
+        }// For Append
         else
         {
             try {

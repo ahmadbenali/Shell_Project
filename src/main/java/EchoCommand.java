@@ -23,10 +23,7 @@ public class EchoCommand extends BaseBuiltIn {
             //Content of the command appear on console and any message will go to stderr
             else if (isStderr) {
                 System.out.println(HandleEcho(data.ClearCommand));
-
-
                 prepareEmptyErrorFile(data.WriteOnFile, context.getCurrentPath(), "echo");
-
             }
             else {
                 // Standard behavior (writing to console)
@@ -50,22 +47,7 @@ public class EchoCommand extends BaseBuiltIn {
         String writeOnFile = data.WriteOnFile;
 
 
-        if(data.isStdout)
-        {
-            try {
-                File Stdout = ShellUtils.prepareOutputFile(writeOnFile,
-                        currentPath, "echo");
-
-                // Use try-with-resources to ensure the file closes
-                try (PrintStream fileOut = new PrintStream(new FileOutputStream(Stdout))) {
-                    // Join the parts and write to the file
-                    fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
-                }
-            } catch (IOException e) {
-                System.err.println("echo: redirection failed: " + e.getMessage());
-            }
-        }// For Append
-        else
+        if(data.isAppend)
         {
             try {
                 File Append = ShellUtils.prepareOutputFile(writeOnFile,
@@ -79,9 +61,24 @@ public class EchoCommand extends BaseBuiltIn {
             } catch (IOException e) {
                 System.err.println("echo: redirection failed: " + e.getMessage());
             }
+        }// For StdOut
+        else
+        {
+            try {
+                File Stdout = ShellUtils.prepareOutputFile(writeOnFile,
+                        currentPath, "echo");
+
+                // Use try-with-resources to ensure the file closes
+                try (PrintStream fileOut = new PrintStream(new FileOutputStream(Stdout))) {
+                    // Join the parts and write to the file
+                    fileOut.println(String.join(" ", commandPart.subList(1, commandPart.size())));
+                }
+            } catch (IOException e) {
+                System.err.println("echo: redirection failed: " + e.getMessage());
+            }
         }
 
-    }//as
+    }
 
     private void prepareEmptyErrorFile(String WriteOnFile, String currentPath, String errorMessage) {
         // 2> creates the file even if no error occurs

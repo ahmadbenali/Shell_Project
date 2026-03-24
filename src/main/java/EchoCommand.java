@@ -16,10 +16,6 @@ public class EchoCommand extends BaseBuiltIn {
             if (isStdout) {
                 ExecuteOnFile(data, context.getCurrentPath());
             }
-//            else if(isAppend)
-//            {
-//                ExecuteOnFile(data, context.getCurrentPath());
-//            }
             //Content of the command appear on console and any message will go to stderr
             else if (isStderr) {
                 System.out.println(HandleEcho(data.ClearCommand));
@@ -83,7 +79,6 @@ public class EchoCommand extends BaseBuiltIn {
     private void prepareEmptyErrorFile(String WriteOnFile, String currentPath, String errorMessage) {
         // 2> creates the file even if no error occurs
         File StderrFile = ShellUtils.prepareOutputFile(WriteOnFile, currentPath, errorMessage);
-
 
         try (FileOutputStream fos = new FileOutputStream(StderrFile)) {
         } catch (IOException e) {

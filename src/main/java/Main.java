@@ -1,23 +1,18 @@
 import java.util.*;
-import static java.lang.System.*;
+
 
 public class Main {
 
-    private static String InitializeInput()
-    {
-        out.print("$ ");
-        Scanner scanner=new Scanner(in);//System.in
-        return scanner.nextLine();
-
-    }
+//    private static String InitializeInput()
+//    {
+//        out.print("$ ");
+//        Scanner scanner=new Scanner(in);//System.in
+//        return scanner.nextLine();
+//
+//    }
     public static Map<String,Command> BuiltIn =new HashMap<>();
 
     public static void main(String[] args) throws Exception {
-
-
-        ShellContext context =new ShellContext();
-
-
         //In future make a record instead of this
         BuiltIn.put("echo",new EchoCommand());
         BuiltIn.put("cd",new CdCommand());
@@ -25,9 +20,17 @@ public class Main {
         BuiltIn.put("type",new TypeCommand());
         BuiltIn.put("exit",new ExitCommand());
 
+
+        ShellContext context =new ShellContext();
+        InitializeInput read = new InitializeInput(BuiltIn);
+
+
+
         while(true) {
 
-            String input =InitializeInput();
+            //String input = InitializeInput.ReadInput();
+
+            String input = read.ReadInputWithAutoComplete();
 
             // return an obj that have a parts and bunch of flags, one of these for detect redirect
             List<String> CommandLine = CommandParser.parse(input);

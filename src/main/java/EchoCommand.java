@@ -23,6 +23,8 @@ public class EchoCommand extends BaseBuiltIn {
             //Content of the command appear on console and any message will go to stderr
             else if (isStderr) {
                 System.out.println(HandleEcho(data.ClearCommand));
+
+
                 prepareEmptyErrorFile(data.WriteOnFile, context.getCurrentPath(), "echo");
 
             }
@@ -43,7 +45,7 @@ public class EchoCommand extends BaseBuiltIn {
 
     }
 
-    private static void ExecuteOnFile(ShellUtils.CommandData data, String currentPath) {
+    private static void ExecuteOnFile(ShellUtils.CommandData data, String currentPath)  {
         List<String> commandPart = data.ClearCommand;
         String writeOnFile = data.WriteOnFile;
 

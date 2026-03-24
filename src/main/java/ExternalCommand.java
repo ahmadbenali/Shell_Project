@@ -23,10 +23,6 @@ public class ExternalCommand implements Command {
             {
                 Stderr(data, context, processBuilder);
             }
-            else if(data.isAppend)
-            {
-                Append(data, context, processBuilder);
-            }
             else {
                 processBuilder.inheritIO();
             }
@@ -48,9 +44,17 @@ public class ExternalCommand implements Command {
                 context.getCurrentPath(), data.ClearCommand.getFirst());
 
         assert stderr != null;
-        processBuilder.redirectError(stderr);
-        // Normal output (if any) should still go to the console
-        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT); // Keep stderr separate
+
+        if (data.isAppend)
+        {
+            processBuilder.redirectError(ProcessBuilder.Redirect.appendTo(stderr));
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        }
+        else{
+            processBuilder.redirectError(stderr);
+            // Normal output (if any) should still go to the console
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT); // Keep stderr separate
+        }
     }
 
     private void Stdout(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
@@ -62,19 +66,17 @@ public class ExternalCommand implements Command {
         // Redirect stdout to file
 
         assert stdout != null;
-        processBuilder.redirectOutput(ProcessBuilder.Redirect.to(stdout));
-        // Normal output (if any) should still go to the console
-        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+        if(data.isAppend)
+        {
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.appendTo(stdout));
+            processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+        }
+        else {
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.to(stdout));
+            // Normal output (if any) should still go to the console
+            processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+        }
 
-    }
 
-    private void Append(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
-    {
-        File append = ShellUtils.prepareOutputFile(data.WriteOnFile,
-                context.getCurrentPath(), data.ClearCommand.getFirst());
-
-        assert append != null;
-        processBuilder.redirectOutput(ProcessBuilder.Redirect.appendTo(append));
-        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
     }
 }

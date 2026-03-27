@@ -3,13 +3,6 @@ import java.util.*;
 
 public class Main {
 
-//    private static String InitializeInput()
-//    {
-//        out.print("$ ");
-//        Scanner scanner=new Scanner(in);//System.in
-//        return scanner.nextLine();
-//
-//    }
     public static Map<String,Command> BuiltIn =new HashMap<>();
 
     public static void main(String[] args) throws Exception {
@@ -25,20 +18,17 @@ public class Main {
         InitializeInput read = new InitializeInput(BuiltIn);
 
 
-
         while(true) {
-
-            //String input = InitializeInput.ReadInput();
 
             String input = read.ReadInputWithAutoComplete();
 
             // return an obj that have a parts and bunch of flags, one of these for detect redirect
             List<String> CommandLine = CommandParser.parse(input);
 
-            String cmdName = CommandLine.getFirst();
+            String cmdName = CommandLine.get(0);
             Command cmd = BuiltIn.get(cmdName);
 
-            //ah
+
             if (cmd != null) {
                 cmd.execute(CommandLine, context);
             }

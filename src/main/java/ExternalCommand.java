@@ -41,7 +41,7 @@ public class ExternalCommand implements Command {
     private void Stderr(ShellUtils.CommandData data , ShellContext context ,ProcessBuilder processBuilder)
     {
         File stderr = ShellUtils.prepareOutputFile(data.WriteOnFile,
-                context.getCurrentPath(), data.ClearCommand.getFirst());
+                context.getCurrentPath(), data.ClearCommand.get(0));
 
         assert stderr != null;
 
@@ -61,9 +61,9 @@ public class ExternalCommand implements Command {
     {
         // Handle the output file path
         File stdout = ShellUtils.prepareOutputFile(data.WriteOnFile,
-                context.getCurrentPath(), data.ClearCommand.getFirst());
+                context.getCurrentPath(), data.ClearCommand.get(0));
 
-        // Redirect stdout to file
+        // Redirect stdout to file fmofme
 
         assert stdout != null;
         if(data.isAppend)

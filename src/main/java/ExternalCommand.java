@@ -63,7 +63,7 @@ public class ExternalCommand implements Command {
         File stdout = ShellUtils.prepareOutputFile(data.WriteOnFile,
                 context.getCurrentPath(), data.ClearCommand.get(0));
 
-        // Redirect stdout to file fmofme
+        // Redirect stdout to file fmofmedd
 
         assert stdout != null;
         if(data.isAppend)

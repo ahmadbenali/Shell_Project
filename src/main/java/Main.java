@@ -17,6 +17,7 @@ public class Main {
 
 
         ShellContext context =new ShellContext();
+        System.setProperty("org.jline.terminal.provider", "exec");
         InitializeInput read = new InitializeInput(BuiltIn);
 
 

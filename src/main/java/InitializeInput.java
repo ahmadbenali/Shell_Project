@@ -22,6 +22,7 @@ public class InitializeInput {
         //BuiltIn.keySet() is first set of strings to complete
         Set<String> allCommands = new HashSet<>(BuiltIn.keySet());
         allCommands.addAll(getExternalCommands());
+        allCommands.add("exit");
         try{
             Terminal terminal = TerminalBuilder.builder()
                     .system(true)

@@ -13,6 +13,7 @@ public class Main {
         BuiltIn.put("cd",new CdCommand());
         BuiltIn.put("pwd",new PwdCommand());
         BuiltIn.put("type",new TypeCommand());
+        //BuiltIn.put("exit",new )
 
 
 

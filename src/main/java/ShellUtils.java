@@ -24,11 +24,8 @@ public class ShellUtils {
 
         int stdoutIndex = CommandLine.indexOf(">");//index or -1
         int stderrIndex = CommandLine.indexOf("2>");
-
         int appendOut = CommandLine.indexOf(">>");//append output
         int appendErr = CommandLine.indexOf("2>>");
-
-
 
         // If ">" is found and there is a filename after it
         if (stdoutIndex != -1 ) {

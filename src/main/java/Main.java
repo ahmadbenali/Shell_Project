@@ -13,13 +13,12 @@ public class Main {
         BuiltIn.put("cd",new CdCommand());
         BuiltIn.put("pwd",new PwdCommand());
         BuiltIn.put("type",new TypeCommand());
-        //BuiltIn.put("exit",new )
 
 
 
         ShellContext context =new ShellContext();
-        //To solve the JLine native library issue
-        //System.setProperty("org.jline.terminal.provider", "exec");
+        //To solve the JLine native library issue, other ways didn't worked!
+        System.setProperty("org.jline.terminal.provider", "exec");
         InitializeInput read = new InitializeInput(BuiltIn);
 
 

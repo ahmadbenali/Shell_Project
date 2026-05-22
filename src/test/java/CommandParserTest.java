@@ -11,9 +11,10 @@ public class CommandParserTest {
     void AppendTest()
     {
         List<String> result = CommandParser.parse("echo hello 2>> output.txt");
-        // The parser should split "echo" and "first" into separate tokens
+
         List<String> expected = List.of("echo", "hello", "2>>", "output.txt");
 
+        //the message appear on failure
         assertEquals(expected, result, "The parser should split arguments and identify '>>'");
 
     }

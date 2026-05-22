@@ -18,7 +18,8 @@ public class Main {
 
 
         ShellContext context =new ShellContext();
-        System.setProperty("org.jline.terminal.provider", "exec");
+        //To solve the JLine native library issue
+        //System.setProperty("org.jline.terminal.provider", "exec");
         InitializeInput read = new InitializeInput(BuiltIn);
 
 

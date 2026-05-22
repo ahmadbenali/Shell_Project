@@ -23,7 +23,7 @@
             <scope>compile</scope>
         </dependency>
 
-        <!--  for AutoCompletion   -->
+        <!--  for AutoCompletionTest   -->
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>

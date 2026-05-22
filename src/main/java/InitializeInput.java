@@ -16,8 +16,6 @@ public class InitializeInput {
         this.BuiltIn = builtIn;
         this.reader = createLineReader();
     }
-//dsdkak
-
     private LineReader createLineReader(){
         try{
             Terminal terminal = TerminalBuilder.builder()

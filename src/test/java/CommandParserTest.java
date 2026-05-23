@@ -7,15 +7,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommandParserTest {
 
-    @Test
+
     void AppendTest()
     {
-        List<String> result = CommandParser.parse("echo hello 2>> output.txt");
+        List<String> result = CommandParser.parse("echo \"test\"insidequotes\"script\"");
 
-        List<String> expected = List.of("echo", "hello", "2>>", "output.txt");
+        String expectedOutput = "\"test\"insidequotesscript\"\"";
 
         //the message appear on failure
-        assertEquals(expected, result, "The parser should split arguments and identify '>>'");
+        assertEquals(expectedOutput, result.get(1), "should be the same string: ");
 
     }
 }

@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandParser {
-    public static List<String> parse(String Input )
+    public static List<String> parse(String Input)
     {
         List<String> FinalString = new ArrayList<>();
         StringBuilder CurrentString = new StringBuilder();
 
-        boolean inSingle = false;//inside Single
+        boolean inSingle = false;//inside Single quotes
         boolean inDouble = false;//inside double
         boolean escaped = false;
 
@@ -26,14 +26,15 @@ public class CommandParser {
                     CurrentString.append(c); // Outside quotes, \ always escapes
                 }
                 escaped = false;
-            }else if (c == '>' && !inSingle && !inDouble) {
+            }
+            else if (c == '>' && !inSingle && !inDouble) {
 
                 String op = ">";
                 if (i + 1 < Input.length() && Input.charAt(i + 1) == '>') {
                     op = ">>";
                     i++; // Skip the next '>' character in the loop
                 }
-        //lll
+
                 if (CurrentString.length() == 1 && (CurrentString.charAt(0) == '1' || CurrentString.charAt(0) == '2' )) {
                     char prefix = CurrentString.charAt(0);
                     // It's '1>', we clear the '1' so it doesn't stay in the arguments
@@ -46,7 +47,7 @@ public class CommandParser {
                     }
                 }
                 else {
-                    if (!CurrentString.isEmpty()) {
+                    if (CurrentString.length() > 0) {
                         // If it was a word like "echo", finish it
                         FinalString.add(CurrentString.toString());
                         CurrentString.setLength(0);
@@ -62,7 +63,7 @@ public class CommandParser {
                 inDouble = !inDouble; // Toggle double quotes
             } else if (c == ' ' && !inSingle && !inDouble) {
                 // Split into new argument on unquoted space
-                if (!CurrentString.isEmpty()) {
+                if (CurrentString.length() > 0) {
                     FinalString.add(CurrentString.toString());
                     CurrentString.setLength(0);
                 }
@@ -73,7 +74,7 @@ public class CommandParser {
 
         //Out of the loop
         if (escaped) CurrentString.append('\\'); // Handle trailing backslash
-        if (!CurrentString.isEmpty()) FinalString.add(CurrentString.toString());
+        if (CurrentString.length() > 0) FinalString.add(CurrentString.toString());
 
         return FinalString;
 

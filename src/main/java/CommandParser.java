@@ -5,42 +5,60 @@ public class CommandParser {
     public static List<String> parse(String Input) {
         List<String> FinalString = new ArrayList<>();
         StringBuilder CurrentString = new StringBuilder();
-
-        boolean inSingle = false; // inside Single quotes
-        boolean inDouble = false; // inside double
+        boolean inSingle = false;
+        boolean inDouble = false;
         boolean escaped = false;
 
         for (int i = 0; i < Input.length(); i++) {
             char c = Input.charAt(i);
 
             if (escaped) {
-                // Check double quote rules: \ only escapes " \ $ and newline
+                // Handle escaped character
                 if (inDouble) {
-                    if (c == '"' || c == '\\' || c == '$' || c == '\n') {
+                    if (c == '"' || c == '\\' || c == '$' || c == '`') {
                         CurrentString.append(c);
+                    } else if (c == 'n') {
+                        CurrentString.append('\n');
+                    } else if (c == 'r') {
+                        CurrentString.append('\r');
+                    } else if (c == 't') {
+                        CurrentString.append('\t');
                     } else {
-                        CurrentString.append('\\').append(c); // Keep literal backslash
+                        CurrentString.append('\\').append(c);
                     }
                 } else {
-                    CurrentString.append(c); // Outside quotes, \ always escapes
+                    CurrentString.append(c);
                 }
                 escaped = false;
-
-            } else if (c == '>' && !inSingle && !inDouble) {
+            }
+            else if (c == '\\' && !inSingle) {
+                escaped = true;
+            }
+            else if (c == '\'' && !inDouble) {
+                inSingle = !inSingle;
+            }
+            else if (c == '"' && !inSingle) {
+                if (inDouble) {
+                    // Inside double quotes: this " ends the quote
+                    inDouble = false;
+                } else {
+                    // Outside double quotes: this " starts a quote
+                    inDouble = true;
+                }
+            }
+            else if (c == '>' && !inSingle && !inDouble) {
                 String op = ">";
                 if (i + 1 < Input.length() && Input.charAt(i + 1) == '>') {
                     op = ">>";
-                    i++; // Skip the next '>' character in the loop
+                    i++;
                 }
-
                 if (CurrentString.length() == 1 && (CurrentString.charAt(0) == '1' || CurrentString.charAt(0) == '2')) {
                     char prefix = CurrentString.charAt(0);
-                    // It's '1>', we clear the '1' so it doesn't stay in the arguments
                     CurrentString.setLength(0);
                     if (prefix == '1') {
-                        FinalString.add(op); // '1>' is treated the same as '>'
+                        FinalString.add(op);
                     } else {
-                        FinalString.add("2" + op); // Explicitly add '2>' to the list
+                        FinalString.add("2" + op);
                     }
                 } else {
                     if (!CurrentString.isEmpty()) {
@@ -49,31 +67,21 @@ public class CommandParser {
                     }
                     FinalString.add(op);
                 }
-
-            } else if (c == '\\' && !inSingle) {
-                escaped = true; // Trigger escape mode for next char
-
-            } else if (c == '\'' && !inDouble) {
-                inSingle = !inSingle; // Toggle single quotes
-
-            } else if (c == '"' && !inSingle) {
-                inDouble = !inDouble; // Toggle double quotes
-
-            } else if (c == ' ' && !inSingle && !inDouble) {
-                // Split into new argument on unquoted space
+            }
+            else if (c == ' ' && !inSingle && !inDouble) {
                 if (!CurrentString.isEmpty()) {
                     FinalString.add(CurrentString.toString());
                     CurrentString.setLength(0);
                 }
-            } else {
+            }
+            else {
+                // Regular character: add to current string
                 CurrentString.append(c);
             }
         }
 
-        // Out of the loop
-        if (escaped) CurrentString.append('\\'); // Handle trailing backslash
+        if (escaped) CurrentString.append('\\');
         if (!CurrentString.isEmpty()) FinalString.add(CurrentString.toString());
-
         return FinalString;
     }
 }

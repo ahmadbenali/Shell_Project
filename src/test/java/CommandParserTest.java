@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommandParserTest {
 
-
+    //@Test
     void AppendTest()
     {
         List<String> result = CommandParser.parse("echo \"test\"insidequotes\"script\"");

@@ -29,13 +29,14 @@ public class Main {
             // return an obj that have a parts and bunch of flags, one of these for detect redirect
             List<String> CommandLine = CommandParser.parse(input);
 
-            String cmdName = CommandLine.get(0);
-            Command cmd = BuiltIn.get(cmdName);
+            //CommandLine is the command+Args
+            String command = CommandLine.get(0);
+            Command cmd = BuiltIn.get(command);
 
 
             //This is wrong because the IDE tell you to put return of break inside while to exit
             //You can delete class exit
-            if(cmdName.equals("exit")) {
+            if(command.equals("exit")) {
                 System.exit(0);
             }
 
@@ -44,14 +45,14 @@ public class Main {
             }
             else
             {
-                String path = ShellContext.getPath(cmdName);
+                String path = ShellContext.getPath(command);
                 if(path != null)
                 {
                     Command External =new ExternalCommand();
                     External.execute(CommandLine,context);
                 }
                 else {
-                    System.out.println(cmdName+": command not found");
+                    System.out.println(command +": command not found");
                     Toolkit.getDefaultToolkit().beep();
                 }
             }

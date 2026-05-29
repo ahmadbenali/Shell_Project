@@ -7,15 +7,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommandParserTest {
 
-    //@Test
+    @Test
     void AppendTest()
     {
-        List<String> result = CommandParser.parse("echo \"test\"insidequotes\"script\"");
+        //Triple quotes to write exact terminal commands
+        String shellCommand = """
+            echo "test\"insidequotes"hello\"
+            """;
 
-        String expectedOutput = "\"test\"insidequotesscript\"\"";
+        List<String> result = CommandParser.parse(shellCommand.trim());
 
-        //the message appear on failure
-        assertEquals(expectedOutput, result.get(1), "should be the same string: ");
+        String expectedOutput = "test\"insidequoteshello\"";
 
+        assertEquals(expectedOutput, result.get(1), "NOOOOOOOOOOOOOOOOOOOOOOOO");
     }
 }

@@ -34,7 +34,7 @@ public class EchoCommand extends BaseBuiltIn {
         List<String> echoArgs = CommandLine.subList(1, CommandLine.size());
         //System.out.println(String.join(" ", echoArgs));
         return String.join(" ", echoArgs);
-        // return the output
+
 
     }
 

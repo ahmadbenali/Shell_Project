@@ -54,8 +54,8 @@ public class CommandParser {
                 escaped = true; // Trigger escape mode for next char
             } else if (c == '\'' && !inDouble) {
                 inSingle = !inSingle; // Toggle single quotes
-            } else if (c == '"' && !inSingle && !inDouble) {
-                inDouble = true;
+            } else if (c == '"' && !inSingle ) {
+                inDouble = !inDouble;
             }else if (c == ' ' && !inSingle && !inDouble) {
                 // Split into new argument on unquoted space
                 if (!CurrentString.isEmpty()) {

@@ -1,6 +1,7 @@
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -28,9 +29,13 @@ public class InitializeInput {
                     .system(true)
                     .build();
 
+            DefaultParser parser = new DefaultParser();
+            parser.setEscapeChars(new char[0]);
+
             return LineReaderBuilder.builder()
                     .terminal(terminal)
                     .completer(new StringsCompleter(allCommands))
+                    .parser(parser)
                     .build();
 
         } catch (IOException e) {

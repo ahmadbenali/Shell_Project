@@ -29,13 +29,15 @@ public class InitializeInput {
                     .system(true)
                     .build();
 
+            //because jline use a parser and he will remove \ when he see it
+            // so disable it
             DefaultParser parser = new DefaultParser();
             parser.setEscapeChars(new char[0]);
 
             return LineReaderBuilder.builder()
                     .terminal(terminal)
                     .completer(new StringsCompleter(allCommands))
-                    .parser(parser)
+                    .parser(parser) // to disable the parser
                     .build();
 
         } catch (IOException e) {

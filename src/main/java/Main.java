@@ -13,6 +13,7 @@ public class Main {
         BuiltIn.put("cd",new CdCommand());
         BuiltIn.put("pwd",new PwdCommand());
         BuiltIn.put("type",new TypeCommand());
+        BuiltIn.put("exit",new ExitCommand());
 
 
 
@@ -36,9 +37,9 @@ public class Main {
 
             //This is wrong because the IDE tell you to put return of break inside while to exit
             //You can delete class exit
-            if(command.equals("exit")) {
-                System.exit(0);
-            }
+//            if(command.equals("exit")) {
+//                System.exit(0);
+//            }
 
             if (cmd != null) {
                 cmd.execute(CommandLine, context);

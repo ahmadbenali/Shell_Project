@@ -12,7 +12,7 @@ public class CommandParserTest {
     {
         //Triple quotes to write exact terminal commands
         String shellCommand = """
-            echo "test\"insidequotes"hello\"
+            echo "test\\"insidequotes"hello\\"
             """;
 
         List<String> result = CommandParser.parse(shellCommand.trim());

@@ -30,6 +30,11 @@ public class Main {
             // return an obj that have a parts and bunch of flags, one of these for detect redirect
             List<String> CommandLine = CommandParser.parse(input);
 
+            if (CommandLine.contains("|")) {
+                PipelineExecutor.executePipeline(CommandLine, context);
+                continue;
+            }
+
             //CommandLine is the command+Args
             String command = CommandLine.get(0);
             Command cmd = BuiltIn.get(command);

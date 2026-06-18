@@ -79,5 +79,26 @@ public class ShellUtils {
         return file;
     }
 
+    public static List<CommandData> extractPipeline(List<String> CommandLine) {
+        List<CommandData> pipelineData = new ArrayList<>();
+        List<String> currentCommand = new ArrayList<>();
+
+        for (String token : CommandLine) {
+            if (token.equals("|")) {
+                // When hitting a pipe, process the accumulated tokens and clear for the next command
+                pipelineData.add(extractRedirection(currentCommand));
+                currentCommand = new ArrayList<>();
+            } else {
+                currentCommand.add(token);
+            }
+        }
+
+        // Add the final command segment after the last pipe
+        if (!currentCommand.isEmpty()) {
+            pipelineData.add(extractRedirection(currentCommand));
+        }
+
+        return pipelineData;
+    }
 
 }

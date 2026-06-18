@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandParser {
+    //Parsing a string character-by-character like this is called Lexical Analysis.
+    //Replace it with something better
     public static List<String> parse(String Input) {
         List<String> FinalString = new ArrayList<>();
         StringBuilder CurrentString = new StringBuilder();
@@ -50,6 +52,13 @@ public class CommandParser {
                     FinalString.add(op);
                 }
 
+            } else if (c == '|' && !inSingle && !inDouble) {
+                // Finish the current word before the pipe
+                if (!CurrentString.isEmpty()) {
+                    FinalString.add(CurrentString.toString());
+                    CurrentString.setLength(0);
+                }
+                    FinalString.add("|");
             } else if (c == '\\' && !inSingle) {
                 escaped = true; // Trigger escape mode for next char
             } else if (c == '\'' && !inDouble) {
